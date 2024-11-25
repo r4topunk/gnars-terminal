@@ -1,6 +1,7 @@
 import AccountCard from '@/components/cards/account';
 import AuctionCard from '@/components/cards/auction';
 import GovernorCard from '@/components/cards/governor';
+import ZoraCard from '@/components/cards/zora';
 import { ColorModeButton } from '@/components/ui/color-mode';
 import {
   Box,
@@ -41,6 +42,7 @@ function App() {
               <ColorModeButton variant={'outline'} />
             </HStack>
           </HStack>
+          <ZoraCard />
           <AccountCard />
           <AuctionCard />
           <GovernorCard />
