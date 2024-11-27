@@ -1,8 +1,17 @@
 import AccountCard from '@/components/cards/account';
 import AuctionCard from '@/components/cards/auction';
 import GovernorCard from '@/components/cards/governor';
+import MarkdownCard from '@/components/cards/markdown';
+import MarkdownEditor from '@/components/markdown/editor';
 import { ColorModeButton } from '@/components/ui/color-mode';
-import { Heading, HStack, IconButton, VStack } from '@chakra-ui/react';
+import {
+  ClientOnly,
+  Heading,
+  HStack,
+  IconButton,
+  VStack,
+} from '@chakra-ui/react';
+import { Editor } from '@toast-ui/react-editor';
 import Link from 'next/link';
 import { BsGithub } from 'react-icons/bs';
 
@@ -22,6 +31,7 @@ function App() {
           <ColorModeButton variant={'outline'} />
         </HStack>
       </HStack>
+      <MarkdownCard />
       <AccountCard />
       <AuctionCard />
       <GovernorCard />
