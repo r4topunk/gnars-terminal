@@ -8,7 +8,7 @@ export async function fetchAuction(
   orderDirection: string,
   first: number
 ) {
-  const where = { dao: address.toLocaleLowerCase() };
+  const where = { dao: address };
 
   try {
     const { data } = (await noCacheApolloClient.query({

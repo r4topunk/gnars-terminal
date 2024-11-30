@@ -1,63 +1,69 @@
 'use client';
 
+import { useQuery } from '@tanstack/react-query';
 import { formatEthAddress } from '@/utils/helpers';
-import { Link as ChakraLink, Code, HStack, Image } from '@chakra-ui/react';
+import { Code, HStack, Image, Link as ChakraLink } from '@chakra-ui/react';
 import { default as NextImage } from 'next/image';
 import NextLink from 'next/link';
-import { Address } from 'viem';
-import { mainnet } from 'viem/chains';
-import { normalize } from 'viem/ens';
-import { useEnsAvatar, useEnsName } from 'wagmi';
+
+async function fetchNNSName(address: string, clds?: string[]) {
+  const response = await fetch('https://api.nns.xyz/resolve', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      address,
+      clds,
+      fallback: true, // Ensures a default CLD is used if no lookup is found
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to resolve NNS name');
+  }
+
+  const { name } = await response.json();
+  return name as string | null;
+}
+
+function useNNSName(address?: string, clds?: string[]) {
+  return useQuery({
+    queryKey: ['nnsName', address, clds],
+    queryFn: () => fetchNNSName(address || '', clds),
+    enabled: !!address,
+  });
+}
 
 export function FormattedAddress({
   address,
   textBefore,
-  asLink: useLink = true,
+  asLink = true,
+  clds,
 }: {
-  address?: Address;
+  address?: string;
   textBefore?: string;
   asLink?: boolean;
+  clds?: string[]; // Optional: Specify CLDs to filter by
 }) {
   if (!address) return null;
 
-  const { data: ensName } = useEnsName({
-    address: address,
-    chainId: mainnet.id,
-  });
-
-  const { data: ensAvatar } = useEnsAvatar({
-    name: ensName ? normalize(ensName) : undefined,
-    chainId: mainnet.id,
-  });
+  const { data: nnsName, isLoading, isError } = useNNSName(address, clds);
 
   const AddressContent = () => (
-    <Code
-      size={'sm'}
-      variant={'surface'}
-      colorPalette={ensName ? '' : 'gray'}
-      gap={1}
-    >
-      {ensAvatar ? (
-        <Image asChild rounded={'full'} w={3}>
-          <NextImage
-            width={24}
-            height={24}
-            src={ensAvatar}
-            alt={`ENS avatar for ${ensName}`}
-            onError={(e) => {
-              e.currentTarget.style.display = 'none';
-            }}
-          />
-        </Image>
-      ) : null}
-      {ensName ? ensName : formatEthAddress(address)}
+    <Code size="sm" variant="surface" colorScheme={nnsName ? '' : 'gray'}>
+      {isLoading
+        ? 'Resolving...'
+        : isError || !nnsName
+          ? formatEthAddress(address)
+          : nnsName}
     </Code>
   );
 
   return (
-    <HStack gap={1} w={'fit'}>
-      {textBefore ? <span>{textBefore}</span> : null}
-      {useLink ? (
+    <HStack >
+      {textBefore && <span>{textBefore}</span>}
+      {asLink ? (
         <ChakraLink asChild>
           <NextLink href={`https://nouns.build/profile/${address}`}>
             <AddressContent />

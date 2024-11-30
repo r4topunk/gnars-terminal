@@ -45,7 +45,8 @@ function AuctionPage() {
     useWriteAuctionSettleCurrentAndCreateNewAuction();
   const onClickSettle = useCallback(async () => {
     try {
-      const res = await writeSettle({});
+      const res = await writeSettle({
+      });
       console.log(res);
     } catch (error) {
       console.error(error);

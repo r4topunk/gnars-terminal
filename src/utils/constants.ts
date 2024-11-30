@@ -9,7 +9,7 @@ export const GRAPHQL_URL =
 export const DAO_ADDRESSES = {
   token: process.env.NEXT_PUBLIC_TOKEN as Address,
   metadata: process.env.NEXT_PUBLIC_METADATA as Address,
-  auction: process.env.NEXT_PUBLIC_AUCTION as Address,
+  auction: process.env.NEXT_PUBLIC_AUCTION as Address || '0x494eaa55ecf6310658b8fc004b0888dcb698097f',
   treasury: process.env.NEXT_PUBLIC_TREASURY as Address,
   governor: process.env.NEXT_PUBLIC_GOVERNOR as Address,
 };

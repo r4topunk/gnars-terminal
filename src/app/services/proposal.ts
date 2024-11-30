@@ -78,7 +78,7 @@ export async function fetchProposals(
   where: object = {},
   showDescription: boolean = false
 ) {
-  const _where = { dao: address.toLocaleLowerCase(), ...where };
+  const _where = { dao: address, ...where };
 
   try {
     let { data } = await noCacheApolloClient.query({
