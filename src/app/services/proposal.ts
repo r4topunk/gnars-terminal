@@ -2,27 +2,39 @@ import { gql } from '@apollo/client';
 import apolloClient, { noCacheApolloClient } from '@/utils/apollo';
 import { Address } from 'viem';
 
-export interface Proposal {
+export type Proposal = {
   proposalId: Address;
   proposalNumber: number;
-  title: string;
-  proposer: Address;
-  timeCreated: string;
-  againstVotes: number;
-  voteCount: number;
-  quorumVotes: string;
+  description: string;
   forVotes: number;
+  againstVotes: number;
   abstainVotes: number;
-  voteStart: string;
+  expiresAt: number | null;
+  proposer: Address;
+  snapshotBlockNumber: number;
+  status: string;
+  title: string;
+  transactionHash: Address
   voteEnd: string;
-  queued: boolean;
+  voteStart: string;
+  calldatas: string;
+  descriptionHash: Address;
+  executableFrom: number;
+  targets: string[];
+  values: string[];
+  timeCreated: number;
   executed: boolean;
   canceled: boolean;
+  queued: boolean;
   vetoed: boolean;
-  description?: string;
+  quorumVotes: string;
+  voteCount: number;
+  dao: {
+    id: `0x${string}`;
+    name: string;
+  };
   votes: Vote[];
-}
-
+};
 interface Vote {
   weight: string;
   voter: Address;
@@ -52,6 +64,9 @@ const GET_DATA = gql`
       againstVotes
       forVotes
       abstainVotes
+      calldatas
+      values
+      targets
       voteStart
       voteEnd
       queued

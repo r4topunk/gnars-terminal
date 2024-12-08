@@ -4,6 +4,7 @@ import rehypeSanitize from 'rehype-sanitize';
 import remarkGfm from 'remark-gfm';
 import React from 'react';
 
+import MarkdownRenderers from './markdownRenderers';
 interface MarkdownProps {
   text?: string;
 }
@@ -13,6 +14,7 @@ function Markdown({ text }: MarkdownProps) {
     <ReactMarkdown
       rehypePlugins={[rehypeRaw, rehypeSanitize]}
       remarkPlugins={[remarkGfm]}
+      components={MarkdownRenderers}
     >
       {text}
     </ReactMarkdown>

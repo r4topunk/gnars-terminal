@@ -1,7 +1,7 @@
 'use client';
 
 import { ColorModeButton } from '@/components/ui/color-mode';
-import { Heading, HStack, IconButton, useMediaQuery } from '@chakra-ui/react';
+import { Heading, HStack, IconButton, Image, Stack, Text, useMediaQuery } from '@chakra-ui/react';
 import Link from 'next/link';
 import { BsGithub } from 'react-icons/bs';
 import ConnectButton from './connect-button';
@@ -23,7 +23,10 @@ export default function Navbar() {
     >
       <Link href={'/'}>
         <Heading size={{ base: '2xl', md: '4xl' }} as='h1'>
-          Gnars Terminal
+          <Stack direction="row" align="center" gap={4}>
+            <Image src='https://gnars.com/images/logo.png' alt='gnars-terminal' boxSize={12} />
+            <Text fontSize={{ base: 'xl', md: '2xl' }} fontWeight="bold">TermGnar</Text>
+          </Stack>
         </Heading>
       </Link>
       {isLargerThanMd ? (
