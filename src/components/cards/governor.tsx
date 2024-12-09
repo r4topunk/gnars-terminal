@@ -40,7 +40,7 @@ async function GovernorCard() {
           </Tabs.List>
         </HStack>
         <Tabs.Content value='grid'>
-          <Grid templateColumns={'repeat(2, 1fr)'} gap={2}>
+          <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} gap={2}>
             {proposals.map((proposal: Proposal) => (
               <GridItem key={proposal.proposalId}>
                 <ProposalGridCard proposal={proposal} />

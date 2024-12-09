@@ -51,7 +51,7 @@ const ProposalGridCard = memo(({ proposal }: ProposalGridCardProps) => {
             </Box>
           </AspectRatio>
         )}
-        <HStack gap={1} position={'absolute'} bottom={0} right={0}>
+        <HStack gap={1}>
           <ProposalStatus proposal={proposal} />
           <FormattedAddress address={proposal.proposer} asLink={false} />
         </HStack>
