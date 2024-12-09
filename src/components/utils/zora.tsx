@@ -1,6 +1,3 @@
-'use client';
-
-import { useState } from 'react';
 import { Address } from 'viem';
 
 export default function ZoraEmbed({
