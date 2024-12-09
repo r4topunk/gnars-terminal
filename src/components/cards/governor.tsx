@@ -1,15 +1,19 @@
 import { fetchProposals, Proposal } from '@/app/services/proposal';
 import { DAO_ADDRESSES } from '@/utils/constants';
-import { Box, Heading, HStack, Tabs } from '@chakra-ui/react';
+import { Box, Grid, GridItem, Heading, HStack, Tabs } from '@chakra-ui/react';
 import ProposalListCard from '../proposal/listCard';
 import { LuLayoutGrid, LuList } from 'react-icons/lu';
+import ProposalGridCard from '../proposal/gridCard';
 
 async function GovernorCard() {
   const proposals = await fetchProposals(
     DAO_ADDRESSES.token,
     'proposalNumber',
     'desc',
-    1000
+    1000,
+    {},
+    false,
+    true
   );
 
   return (
@@ -36,9 +40,13 @@ async function GovernorCard() {
           </Tabs.List>
         </HStack>
         <Tabs.Content value='grid'>
-          {proposals.map((proposal: Proposal) => (
-            <ProposalListCard key={proposal.proposalId} proposal={proposal} />
-          ))}
+          <Grid templateColumns={'repeat(2, 1fr)'} gap={2}>
+            {proposals.map((proposal: Proposal) => (
+              <GridItem key={proposal.proposalId}>
+                <ProposalGridCard proposal={proposal} />
+              </GridItem>
+            ))}
+          </Grid>
         </Tabs.Content>
         <Tabs.Content value='list'>
           {proposals.map((proposal: Proposal) => (

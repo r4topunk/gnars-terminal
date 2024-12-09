@@ -1,5 +1,5 @@
+import { noCacheApolloClient } from '@/utils/apollo';
 import { gql } from '@apollo/client';
-import apolloClient, { noCacheApolloClient } from '@/utils/apollo';
 import { Address } from 'viem';
 
 export type Proposal = {
@@ -14,7 +14,7 @@ export type Proposal = {
   snapshotBlockNumber: number;
   status: string;
   title: string;
-  transactionHash: Address
+  transactionHash: Address;
   voteEnd: string;
   voteStart: string;
   calldatas: string;
@@ -35,6 +35,11 @@ export type Proposal = {
   };
   votes: Vote[];
 };
+
+export type ProposalWithThumbnail = Proposal & {
+  thumbnail?: string;
+};
+
 interface Vote {
   weight: string;
   voter: Address;
@@ -85,14 +90,20 @@ const GET_DATA = gql`
   }
 `;
 
+const extractThumbnail = (description: string): string | undefined => {
+  const match = description.match(/!\[.*?\]\((.*?)\)/);
+  return match ? match[1] : undefined;
+};
+
 export async function fetchProposals(
   address: string,
   orderBy: string,
   orderDirection: string,
   first: number,
   where: object = {},
-  showDescription: boolean = false
-) {
+  showDescription: boolean = false,
+  showThumbnail: boolean = false
+): Promise<ProposalWithThumbnail[]> {
   const _where = { dao: address.toLocaleLowerCase(), ...where };
 
   try {
@@ -107,14 +118,22 @@ export async function fetchProposals(
     });
 
     const proposals = data.proposals.map((proposal: Proposal) => {
+      let result: ProposalWithThumbnail = proposal;
+
       if (!showDescription) {
         const { description, ...rest } = proposal;
-        return rest;
+        result = rest as ProposalWithThumbnail;
       }
-      return proposal;
+
+      if (showThumbnail) {
+        const thumbnail = extractThumbnail(proposal.description);
+        result = { ...result, thumbnail };
+      }
+
+      return result;
     });
 
-    return proposals as Proposal[];
+    return proposals as ProposalWithThumbnail[];
   } catch (error) {
     console.error(error);
     throw new Error('Erro ao consultar propostas');
