@@ -1,7 +1,15 @@
 'use client';
 
 import { ColorModeButton } from '@/components/ui/color-mode';
-import { Heading, HStack, IconButton, Image, Stack, Text, useMediaQuery } from '@chakra-ui/react';
+import {
+  Heading,
+  HStack,
+  IconButton,
+  Image,
+  Stack,
+  Text,
+  useMediaQuery,
+} from '@chakra-ui/react';
 import Link from 'next/link';
 import { BsGithub } from 'react-icons/bs';
 import ConnectButton from './connect-button';
@@ -17,17 +25,21 @@ export default function Navbar() {
     <HStack
       w={'full'}
       justify={'space-between'}
-      px={{ base: 4, md: 2 }}
+      px={4}
       py={2}
       colorPalette={'yellow'}
     >
       <Link href={'/'}>
-        <Heading size={{ base: '2xl', md: '4xl' }} as='h1'>
-          <Stack direction="row" align="center" gap={4}>
-            <Image src='https://gnars.com/images/logo.png' alt='gnars-terminal' boxSize={12} />
-            <Text fontSize={{ base: 'xl', md: '2xl' }} fontWeight="bold">TermGnar</Text>
-          </Stack>
-        </Heading>
+        <Stack direction='row' align='center' gap={2}>
+          <Image
+            src='https://gnars.com/images/logo.png'
+            alt='gnars-terminal'
+            boxSize={6}
+          />
+          <Heading size={{ base: 'xl', md: '2xl' }} as='h1' fontWeight={'bold'}>
+            TermGnar
+          </Heading>
+        </Stack>
       </Link>
       {isLargerThanMd ? (
         <HStack>
