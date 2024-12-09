@@ -111,9 +111,9 @@ export function AuctionBid(props: BidProps) {
             variant={'solid'}
             onClick={onClickSettle}
             disabled={account.isDisconnected}
-            w={60}
+            w={{ base: 'full', md: 60 }}
           >
-            Settle
+            Settle auction
           </Button>
         )}
       </HStack>
