@@ -23,6 +23,13 @@ export default async function AuctionCard() {
     1
   );
   const activeAuction = auctions[0];
+  const isAuctionRunning = parseInt(activeAuction.endTime) * 1000 > Date.now();
+  console.log(
+    activeAuction.endTime,
+    parseInt(activeAuction.endTime) * 1000,
+    Date.now(),
+    isAuctionRunning
+  );
 
   return (
     <VStack
@@ -56,7 +63,7 @@ export default async function AuctionCard() {
               />
             </VStack>
           ) : (
-            <Text>No bids yet</Text>
+            <Text>No bids {isAuctionRunning ? 'yet' : ''}</Text>
           )}
           <AuctionBid
             tokenId={activeAuction.token.tokenId}
@@ -65,9 +72,7 @@ export default async function AuctionCard() {
                 ? BigInt(activeAuction.winningBid.amount)
                 : 0n
             }
-            isAuctionRunning={
-              parseInt(activeAuction.endTime) * 1000 > Date.now()
-            }
+            isAuctionRunning={isAuctionRunning}
           />
         </VStack>
         <Image asChild rounded={'md'} w={'full'} maxW={{ md: '240px' }}>

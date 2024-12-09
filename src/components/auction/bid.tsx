@@ -66,45 +66,52 @@ export function AuctionBid(props: BidProps) {
   return (
     <VStack align={'stretch'} gap={0} w={'full'}>
       <HStack mt={4} w={'full'}>
-        <Tooltip showArrow content='Sparks'>
-          <ChakraLink
-            asChild
-            variant={'plain'}
-            fontWeight={'bold'}
-            fontSize={'xl'}
-          >
-            <NextLink target='_blank' href={'https://zora.co/writings/sparks'}>
-              ✧
-            </NextLink>
-          </ChakraLink>
-        </Tooltip>
-        <NumberInputRoot
-          maxW={{ md: '120px' }}
-          w={'full'}
-          defaultValue={bidValue}
-          step={111}
-          onValueChange={(datails) => setBidValue(datails.value)}
-          disabled={account.isDisconnected}
-          min={0}
-        >
-          <NumberInputField />
-        </NumberInputRoot>
-        <Button
-          variant={'subtle'}
-          onClick={onClickBid}
-          disabled={
-            account.isDisconnected ||
-            !isAuctionRunning ||
-            parseEther(bidValue) < winningBid
-          }
-        >
-          Bid
-        </Button>
-        {!isAuctionRunning && (
+        {isAuctionRunning ? (
+          <>
+            <Tooltip showArrow content='Sparks'>
+              <ChakraLink
+                asChild
+                variant={'plain'}
+                fontWeight={'bold'}
+                fontSize={'xl'}
+              >
+                <NextLink
+                  target='_blank'
+                  href={'https://zora.co/writings/sparks'}
+                >
+                  ✧
+                </NextLink>
+              </ChakraLink>
+            </Tooltip>
+            <NumberInputRoot
+              maxW={{ md: '120px' }}
+              w={'full'}
+              defaultValue={bidValue}
+              step={111}
+              onValueChange={(datails) => setBidValue(datails.value)}
+              disabled={account.isDisconnected}
+              min={0}
+            >
+              <NumberInputField />
+            </NumberInputRoot>
+            <Button
+              variant={'subtle'}
+              onClick={onClickBid}
+              disabled={
+                account.isDisconnected ||
+                !isAuctionRunning ||
+                parseEther(bidValue) < winningBid
+              }
+            >
+              Bid
+            </Button>
+          </>
+        ) : (
           <Button
-            variant={'subtle'}
+            variant={'solid'}
             onClick={onClickSettle}
             disabled={account.isDisconnected}
+            w={60}
           >
             Settle
           </Button>
