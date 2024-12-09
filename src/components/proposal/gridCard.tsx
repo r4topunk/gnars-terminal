@@ -26,11 +26,11 @@ const ProposalGridCard = memo(({ proposal }: ProposalGridCardProps) => {
       borderWidth={1}
       rounded={'md'}
       p={4}
-      mb={2}
       bg={'bg.subtle'}
       display={'flex'}
       gap={2}
       alignItems={'stretch'}
+      h={'full'}
     >
       <VStack gap={1} align={'start'} flex={1}>
         {proposal.thumbnail ? (
