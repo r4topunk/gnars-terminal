@@ -38,7 +38,6 @@ export default function MintBatchTransaction({ calldata, index }: MintBatchTrans
         amount = decodedAmount.toString();
         recipient = decodedRecipient;
 
-        console.log('Decoded Mint Batch Data:', decodedData);
     } catch (error) {
         console.error('Error decoding calldata:', error);
     }

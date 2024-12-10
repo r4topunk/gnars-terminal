@@ -214,7 +214,6 @@ export default function CastVote({ proposal }: CastVoteProps) {
   const onClickVote = useCallback(async () => {
     setLoading(true);
     try {
-      console.log(proposal, vote, reason);
       if (reason && reason !== '') {
         const receipt = await writeCastVoteReason({
           args: [proposal.proposalId, voteValue, reason],

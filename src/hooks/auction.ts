@@ -16,7 +16,6 @@ export const useAuction = () => {
           abi: AUCTION_ABI,
           functionName: 'auction',
         });
-        console.log({ contractData });
         setData(contractData);
       } catch (error: any) {
         setError(error.message);
