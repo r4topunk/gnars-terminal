@@ -5,6 +5,7 @@ import { Address } from 'viem';
 import { FormattedAddress } from '../utils/ethereum';
 import USDCTransaction from './transactions/USDCTransaction';
 import MintBatchTransaction from './transactions/MintBatchTransaction';
+import DroposalTransaction from './transactions/DroposalTransaction';
 
 interface ProposalTransactionsContentProps {
     proposal: {
@@ -62,7 +63,12 @@ function TransactionItem({
         );
     }
 
-    // Handle mint batch transaction
+    // Handle Droposal transaction
+    if (target === "0x58c3ccb2dcb9384e5ab9111cd1a5dea916b0f33c") {
+        return <DroposalTransaction calldata={calldata} index={index} />;
+    }
+
+    // Handle Mint Batch transaction
     if (target === '0x880fb3cf5c6cc2d7dfc13a993e839a9411200c17') {
         return <MintBatchTransaction calldata={normalizedCalldata} index={index} />;
     }
@@ -85,22 +91,25 @@ function TransactionItem({
         </Box>
     );
 }
+
 export default function ProposalTransactionsContent({ proposal }: ProposalTransactionsContentProps) {
     const { targets, values, calldatas } = proposal;
 
-    // Parse `calldatas`: split if it’s a string, or use it directly if it’s an array
+    // Parse and normalize calldatas
     const parsedCalldatas = typeof calldatas === 'string' ? calldatas.split(':') : calldatas;
-
+    const normalizedCalldatas = parsedCalldatas.map(calldata =>
+        calldata === '0x' || calldata === ('0' as Address) ? '0x' : calldata
+    );
 
     if (
         !targets ||
         !values ||
-        !parsedCalldatas ||
+        !normalizedCalldatas ||
         targets.length === 0 ||
         targets.length !== values.length ||
-        targets.length !== parsedCalldatas.length
+        targets.length !== normalizedCalldatas.length
     ) {
-        console.error('Proposal data is inconsistent or missing!');
+        console.error('Proposal data mismatch:', { targets, values, parsedCalldatas });
         return (
             <Box
                 shadow="sm"
@@ -135,7 +144,7 @@ export default function ProposalTransactionsContent({ proposal }: ProposalTransa
                     index={index}
                     target={target}
                     value={values[index]}
-                    calldata={parsedCalldatas[index] as Address} // Ensure calldata is of type `0x${string}`
+                    calldata={normalizedCalldatas[index] as Address}
                 />
             ))}
         </Box>
