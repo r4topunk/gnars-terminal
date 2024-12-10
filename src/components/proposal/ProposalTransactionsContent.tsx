@@ -6,6 +6,7 @@ import { FormattedAddress } from '../utils/ethereum';
 import USDCTransaction from './transactions/USDCTransaction';
 import MintBatchTransaction from './transactions/MintBatchTransaction';
 import DroposalTransaction from './transactions/DroposalTransaction';
+import NftTransferTransaction from './transactions/NFTTrasnfer';
 
 interface ProposalTransactionsContentProps {
     proposal: {
@@ -68,9 +69,44 @@ function TransactionItem({
         return <DroposalTransaction calldata={calldata} index={index} />;
     }
 
-    // Handle Mint Batch transaction
+    // Handle transactions for target contract 0x880fb3cf5c6cc2d7dfc13a993e839a9411200c17
     if (target === '0x880fb3cf5c6cc2d7dfc13a993e839a9411200c17') {
-        return <MintBatchTransaction calldata={normalizedCalldata} index={index} />;
+        const functionSignature = normalizedCalldata.slice(0, 10); // Extract function selector
+
+        if (functionSignature === '0x23b872dd') {
+            // Handle NFT Transfer (ERC721 transferFrom)
+            return (
+                <NftTransferTransaction
+                    calldata={normalizedCalldata}
+                    index={index}
+                />
+            );
+        }
+
+        if (functionSignature === '0xd52fbd91') {
+            // Handle MintBatch transaction
+            return (
+                <MintBatchTransaction
+                    calldata={normalizedCalldata}
+                    index={index}
+                />
+            );
+        }
+
+        // Fallback for unrecognized calldata
+        return (
+            <Box p={4} borderWidth={1} rounded="md" shadow="sm" mb={4}>
+                <Heading size="sm" mb={2}>
+                    Transaction {index + 1}: Unrecognized Transaction
+                </Heading>
+                <Text>
+                    <strong>Target:</strong> {target}
+                </Text>
+                <Text>
+                    <strong>Calldata:</strong> {normalizedCalldata}
+                </Text>
+            </Box>
+        );
     }
 
     // Fallback for unsupported transaction types
@@ -92,9 +128,9 @@ function TransactionItem({
     );
 }
 
+
 export default function ProposalTransactionsContent({ proposal }: ProposalTransactionsContentProps) {
     const { targets, values, calldatas } = proposal;
-
     // Parse and normalize calldatas
     const parsedCalldatas = typeof calldatas === 'string' ? calldatas.split(':') : calldatas;
     const normalizedCalldatas = parsedCalldatas.map(calldata =>
