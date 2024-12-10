@@ -29,7 +29,7 @@ export default function ProposalPageClient({
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    const tabMap = ['description', 'votes', 'transactions'];
+    const tabMap = ['description', 'votes', 'transactions', 'propdates'];
     const [activeTab, setActiveTab] = useState(0);
 
     const tabFromQuery = searchParams?.get('t') || 'description';
