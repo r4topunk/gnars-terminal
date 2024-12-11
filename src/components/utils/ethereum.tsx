@@ -2,8 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { formatEthAddress } from '@/utils/helpers';
-import { Code, HStack, Image, Link as ChakraLink } from '@chakra-ui/react';
-import { default as NextImage } from 'next/image';
+import { Code, HStack } from '@chakra-ui/react';
 import NextLink from 'next/link';
 
 async function fetchNNSName(address: string, clds?: string[]) {
@@ -64,11 +63,9 @@ export function FormattedAddress({
     <HStack >
       {textBefore && <span>{textBefore}</span>}
       {asLink ? (
-        <ChakraLink asChild>
-          <NextLink href={`https://nouns.build/profile/${address}`}>
-            <AddressContent />
-          </NextLink>
-        </ChakraLink>
+        <NextLink href={`https://nouns.build/profile/${address}`}>
+          <AddressContent />
+        </NextLink>
       ) : (
         <AddressContent />
       )}
