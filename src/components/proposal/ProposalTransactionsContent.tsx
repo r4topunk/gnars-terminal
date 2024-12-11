@@ -8,6 +8,7 @@ import MintBatchTransaction from './transactions/MintBatchTransaction';
 import DroposalTransaction from './transactions/DroposalTransaction';
 import NftTransferTransaction from './transactions/NFTTrasnfer';
 
+
 interface ProposalTransactionsContentProps {
     proposal: {
         targets: string[];
@@ -54,7 +55,8 @@ function TransactionItem({
         );
     }
 
-    // Handle Ethereum transfer transaction
+
+
     if (normalizedCalldata === '0x' && value !== '0') {
         return (
             <EthTransferTransaction
@@ -92,7 +94,6 @@ function TransactionItem({
                 />
             );
         }
-
         // Fallback for unrecognized calldata
         return (
             <Box p={4} borderWidth={1} rounded="md" shadow="sm" mb={4}>
@@ -109,11 +110,12 @@ function TransactionItem({
         );
     }
 
+
     // Fallback for unsupported transaction types
     return (
         <Box p={4} borderWidth={1} rounded="md" shadow="sm" mb={4}>
             <Heading size="sm" mb={2}>
-                Transaction {index + 1}: Generic Transfer
+                Transaction {index + 1}: {"Generic Transaction"}
             </Heading>
             <Text>
                 <strong>Target:</strong> {target}
@@ -137,15 +139,16 @@ export default function ProposalTransactionsContent({ proposal }: ProposalTransa
         calldata === '0x' || calldata === ('0' as Address) ? '0x' : calldata
     );
 
+
     if (
         !targets ||
         !values ||
-        !normalizedCalldatas ||
+        !parsedCalldatas ||
         targets.length === 0 ||
         targets.length !== values.length ||
-        targets.length !== normalizedCalldatas.length
+        targets.length !== parsedCalldatas.length
     ) {
-        console.error('Proposal data mismatch:', { targets, values, parsedCalldatas });
+        console.error('Proposal data is inconsistent or missing!');
         return (
             <Box
                 shadow="sm"

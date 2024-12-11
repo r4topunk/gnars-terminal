@@ -30,6 +30,7 @@ export default function ProposalPageClient({
     const searchParams = useSearchParams();
 
     const tabMap = ['description', 'votes', 'transactions', 'propdates'];
+
     const [activeTab, setActiveTab] = useState(0);
 
     const tabFromQuery = searchParams?.get('t') || 'description';
@@ -132,9 +133,9 @@ export default function ProposalPageClient({
                         <LuArchive />
                         <Text ml={2}>Propdates</Text>
                     </Tabs.Trigger>
+
                     <Tabs.Indicator />
                 </Tabs.List>
-
                 <Tabs.Content value="description">
                     <ProposalDescriptionContent proposal={proposal} />
                 </Tabs.Content>
@@ -147,6 +148,7 @@ export default function ProposalPageClient({
                 <Tabs.Content value="propdates">
                     <Text>Soon...</Text>
                 </Tabs.Content>
+
             </Tabs.Root>
         </VStack>
     );
