@@ -117,8 +117,8 @@ export default function DroposalTransaction({ calldata, index }: DroposalTransac
                 </Text>
                 <Text>
                     <strong>Default Admin:</strong>{' '}
-                    <FormattedAddress address={decodedData.defaultAdmin} />
                 </Text>
+                <FormattedAddress address={decodedData.defaultAdmin} />
                 <Text>
                     <strong>Description:</strong> {decodedData.description || 'N/A'}
                 </Text>

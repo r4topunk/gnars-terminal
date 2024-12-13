@@ -74,7 +74,7 @@ const MarkdownRenderers = {
                 backgroundColor: '#FEEF8B',
                 padding: '8px',
                 fontWeight: 'bold',
-                textAlign: 'left',
+                textAlign: 'center',
                 color: 'black',
             }}
         >
@@ -89,7 +89,6 @@ const MarkdownRenderers = {
                 backgroundColor: 'transparent',
                 padding: '8px',
                 textAlign: 'left',
-                color: 'black',
             }}
         >
             {children}

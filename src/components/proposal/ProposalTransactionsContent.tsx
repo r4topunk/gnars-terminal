@@ -1,5 +1,5 @@
 import { Box, VStack, Heading, Text } from '@chakra-ui/react';
-import { decodeUsdcTransaction } from './transactions/utils/decodeUsdcTransaction';
+import { decodeSenditTransaction, decodeUsdcTransaction } from './transactions/utils/decodeUsdcTransaction';
 import EthTransferTransaction from './transactions/EthTransferTransaction';
 import { Address } from 'viem';
 import { FormattedAddress } from '../utils/ethereum';
@@ -7,6 +7,7 @@ import USDCTransaction from './transactions/USDCTransaction';
 import MintBatchTransaction from './transactions/MintBatchTransaction';
 import DroposalTransaction from './transactions/DroposalTransaction';
 import NftTransferTransaction from './transactions/NFTTrasnfer';
+import SenditTransaction from './transactions/SenditTransaction';
 
 
 interface ProposalTransactionsContentProps {
@@ -34,6 +35,29 @@ function TransactionItem({
 
     // Validate calldata before decoding
     const isCalldataValid = normalizedCalldata !== '0x' && normalizedCalldata.length >= 10;
+    console.log(target)
+
+    if (target === '0xba5b9b2d2d06a9021eb3190ea5fb0e02160839a4') {
+        // Decode Sendit Token transaction
+        const senditTransaction = isCalldataValid
+            ? decodeSenditTransaction(normalizedCalldata)
+            : null;
+
+        if (senditTransaction) {
+            const { to, value: decodedValue } = senditTransaction;
+
+            // Format Sendit Token value (divide by 10^18)
+            const formattedValue = (BigInt(decodedValue) / BigInt(10 ** 18)).toString();
+
+            return (
+                <SenditTransaction
+                    index={index}
+                    to={to}
+                    value={formattedValue}
+                />
+            );
+        }
+    }
 
     // Identify USDC transaction by decoding calldata (only if calldata is valid)
     const usdcTransaction = isCalldataValid
@@ -54,6 +78,8 @@ function TransactionItem({
             />
         );
     }
+
+
 
 
 

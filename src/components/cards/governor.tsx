@@ -1,9 +1,10 @@
 import { fetchProposals, Proposal } from '@/app/services/proposal';
 import { DAO_ADDRESSES } from '@/utils/constants';
-import { Box, Grid, GridItem, Heading, HStack, Tabs } from '@chakra-ui/react';
+import { Box, Button, Grid, GridItem, Heading, HStack, Link, Stack, Tabs } from '@chakra-ui/react';
 import ProposalListCard from '../proposal/listCard';
-import { LuLayoutGrid, LuList } from 'react-icons/lu';
+import { LuLayoutGrid, LuList, LuPencilLine } from 'react-icons/lu';
 import ProposalGridCard from '../proposal/gridCard';
+import CreateProposalButton from '../ui/create-proposal-button';
 
 async function GovernorCard() {
   const proposals = await fetchProposals(
@@ -29,7 +30,13 @@ async function GovernorCard() {
     >
       <Tabs.Root defaultValue='list' variant={'subtle'} size={'sm'}>
         <HStack justify={'space-between'}>
-          <Heading as='h2'>Proposals</Heading>
+          <Stack direction='row' gap={4}>
+            <Link href='/dao'>
+              <Heading as='h2'>Proposals</Heading>
+            </Link>
+
+            <CreateProposalButton />
+          </Stack>
           <Tabs.List>
             <Tabs.Trigger value='grid'>
               <LuLayoutGrid />
