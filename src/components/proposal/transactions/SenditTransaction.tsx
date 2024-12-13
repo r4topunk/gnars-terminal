@@ -13,10 +13,13 @@ const SenditTransaction: React.FC<SenditTransactionProps> = ({ index, to, value 
             <Heading size="sm" mb={2}>
                 Transaction {index + 1}: Sendit Token Transfer
             </Heading>
-            <Text display="flex" alignItems="center">
-                <strong>To:</strong>
+            <HStack gap={2} align="center" mt={2}>
+
+                <Text display="flex" alignItems="center">
+                    <strong>To:</strong>
+                </Text>
                 <FormattedAddress address={to} />
-            </Text>
+            </HStack>
             <HStack gap={2} align="center" mt={2}>
                 <Text>
                     <strong>Value:</strong> {value}

@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { formatEthAddress } from '@/utils/helpers';
 import { Code, HStack } from '@chakra-ui/react';
-import NextLink from 'next/link';
+
 
 async function fetchNNSName(address: string, clds?: string[]) {
   const response = await fetch('https://api.nns.xyz/resolve', {
@@ -52,7 +52,7 @@ export function FormattedAddress({
   const AddressContent = () => (
     <Code size="sm" variant="surface" colorScheme={nnsName ? '' : 'gray'}>
       {isLoading
-        ? 'Resolving...'
+        ? formatEthAddress(address)
         : isError || !nnsName
           ? formatEthAddress(address)
           : nnsName}
@@ -63,9 +63,7 @@ export function FormattedAddress({
     <HStack >
       {textBefore && <span>{textBefore}</span>}
       {asLink ? (
-        <NextLink href={`https://nouns.build/profile/${address}`}>
-          <AddressContent />
-        </NextLink>
+        <AddressContent />
       ) : (
         <AddressContent />
       )}
