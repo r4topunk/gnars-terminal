@@ -62,7 +62,7 @@ function ConnectButton() {
   }
 
   return (
-    <Button size={'xs'} variant={'ghost'} onClick={() => disconnect()}>
+    <Button size={'xs'} variant={'subtle'} onClick={() => disconnect()}>
       <Avatar variant={'subtle'} size='xs' w={5} h={5} src={ensAvatar} />
       <FormattedAddress address={address} />
     </Button>

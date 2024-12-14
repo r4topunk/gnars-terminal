@@ -5,7 +5,7 @@ import { Address } from 'viem';
 export type Proposal = {
   proposalId: Address;
   proposalNumber: number;
-  description: string;
+  description?: string;
   forVotes: number;
   againstVotes: number;
   abstainVotes: number;
@@ -14,7 +14,7 @@ export type Proposal = {
   snapshotBlockNumber: number;
   status: string;
   title: string;
-  transactionHash: Address
+  transactionHash: Address;
   voteEnd: string;
   voteStart: string;
   calldatas: string;
@@ -35,7 +35,6 @@ export type Proposal = {
   };
   votes: Vote[];
 };
-
 
 export type ProposalWithThumbnail = Proposal & {
   thumbnail?: string;
@@ -91,7 +90,7 @@ const GET_DATA = gql`
   }
 `;
 
-const extractThumbnail = (description: string): string | undefined => {
+const extractThumbnail = (description: string) => {
   const match = description.match(/!\[.*?\]\((.*?)\)/);
   return match ? match[1] : undefined;
 };
@@ -126,7 +125,7 @@ export async function fetchProposals(
         result = rest as ProposalWithThumbnail;
       }
 
-      if (showThumbnail) {
+      if (showThumbnail && proposal.description) {
         const thumbnail = extractThumbnail(proposal.description);
         result = { ...result, thumbnail };
       }

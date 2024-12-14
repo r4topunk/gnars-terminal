@@ -256,6 +256,14 @@ export default function CastVote({ proposal }: CastVoteProps) {
     );
   }
 
+  if (!userVote && voteEnded) {
+    return (
+      <Text w={'full'} textAlign={'center'} mt={3} fontWeight={'medium'}>
+        You did not voted on this proposal
+      </Text>
+    );
+  }
+
   if (isLargerThanMd) {
     return (
       <DialogRoot placement={'center'} motionPreset='slide-in-bottom'>

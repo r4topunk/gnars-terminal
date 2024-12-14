@@ -18,6 +18,8 @@ interface BidProps {
   tokenId: bigint;
   winningBid: bigint;
   isAuctionRunning: boolean;
+  onBid?: () => void;
+  onSettle?: () => void;
 }
 
 // @todo Add behavior to autoupdate the auction after a new bid or settle
@@ -37,6 +39,9 @@ export function AuctionBid(props: BidProps) {
         value: parseEther(convertSparksToEth(bidValue)),
       });
       setTxHash(txHash);
+      if (props.onBid) {
+        props.onBid();
+      }
     } catch (error) {
       console.error(error);
       if (error instanceof Error) {
@@ -53,6 +58,9 @@ export function AuctionBid(props: BidProps) {
     try {
       const txHash = await writeSettle({});
       setTxHash(txHash);
+      if (props.onSettle) {
+        props.onSettle();
+      }
     } catch (error) {
       console.error(error);
       if (error instanceof Error) {

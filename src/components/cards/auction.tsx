@@ -1,35 +1,88 @@
-import { fetchAuction } from '@/services/auction';
-import { DAO_ADDRESSES } from '@/utils/constants';
+'use client';
+
+import { useLastAuction } from '@/hooks/auction';
+import { Auction } from '@/services/auction';
+import { weiToSparks } from '@/utils/spark';
 import {
   Badge,
-  Code,
   Heading,
   Image,
+  Skeleton,
   Stack,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { default as NextImage } from 'next/image';
-import { formatEther } from 'viem';
 import { AuctionBid } from '../auction/bid';
 import { FormattedAddress } from '../utils/ethereum';
-import { weiToSparks } from '@/utils/spark';
+import {
+  useWatchAuctionAuctionBidEvent,
+  useWatchAuctionAuctionSettledEvent,
+} from '@/hooks/wagmiGenerated';
 
-export default async function AuctionCard() {
-  const auctions = await fetchAuction(
-    DAO_ADDRESSES.token,
-    'endTime',
-    'desc',
-    1
-  );
-  const activeAuction = auctions[0];
+export default function AuctionCard({
+  defaultAuction,
+}: {
+  defaultAuction: Auction;
+}) {
+  const { data: activeAuction, refetch } = useLastAuction(defaultAuction);
+
+  useWatchAuctionAuctionBidEvent({
+    onLogs(logs) {
+      // @todo: remove logs
+      console.log('AuctionBidEvent', logs);
+      refetch();
+    },
+  });
+
+  useWatchAuctionAuctionSettledEvent({
+    onLogs(logs) {
+      // @todo: remove logs
+      console.log('AuctionSettledEvent', logs);
+      refetch();
+    },
+  });
+
+  if (!activeAuction) {
+    return (
+      <VStack
+        shadow={'sm'}
+        w={'full'}
+        padding={4}
+        rounded={'md'}
+        gap={4}
+        _dark={{ borderColor: 'yellow', borderWidth: 1 }}
+      >
+        <Stack
+          direction={{ base: 'column', md: 'row' }}
+          gap={4}
+          align={'start'}
+          justify={'space-between'}
+          w={'full'}
+        >
+          <VStack align={'stretch'} gap={2} w={'full'}>
+            <Heading as='h2'>
+              <Skeleton height='40px' width='160px' />
+            </Heading>
+            <Text>
+              <Skeleton height='20px' width='100px' />
+            </Text>
+            <Text>
+              <Skeleton height='20px' width='80px' />
+            </Text>
+          </VStack>
+          <Skeleton
+            rounded={'md'}
+            w={'full'}
+            maxW={{ md: '240px' }}
+            height='240px'
+          />
+        </Stack>
+      </VStack>
+    );
+  }
+
   const isAuctionRunning = parseInt(activeAuction.endTime) * 1000 > Date.now();
-  console.log(
-    activeAuction.endTime,
-    parseInt(activeAuction.endTime) * 1000,
-    Date.now(),
-    isAuctionRunning
-  );
 
   return (
     <VStack
@@ -73,6 +126,8 @@ export default async function AuctionCard() {
                 : 0n
             }
             isAuctionRunning={isAuctionRunning}
+            onBid={refetch}
+            onSettle={refetch}
           />
         </VStack>
         <Image asChild rounded={'md'} w={'full'} maxW={{ md: '240px' }}>
