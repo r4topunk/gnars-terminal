@@ -2,7 +2,6 @@ import { Box, VStack, Heading, Text } from '@chakra-ui/react';
 import { decodeSenditTransaction, decodeUsdcTransaction } from './transactions/utils/decodeUsdcTransaction';
 import EthTransferTransaction from './transactions/EthTransferTransaction';
 import { Address } from 'viem';
-import { FormattedAddress } from '../utils/ethereum';
 import USDCTransaction from './transactions/USDCTransaction';
 import MintBatchTransaction from './transactions/MintBatchTransaction';
 import DroposalTransaction from './transactions/DroposalTransaction';
