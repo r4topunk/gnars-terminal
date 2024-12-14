@@ -8,6 +8,7 @@ import { cookieToInitialState } from 'wagmi';
 import { Providers } from '@/components/layout/providers';
 import { Box, Container } from '@chakra-ui/react';
 import Navbar from '@/components/layout/navbar';
+import '@toast-ui/editor/dist/toastui-editor.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
