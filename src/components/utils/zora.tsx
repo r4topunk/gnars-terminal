@@ -5,7 +5,7 @@ export default function ZoraEmbed({
 }: {
   chainContract: `${string}:${Address}`;
 }) {
-  const iframeSrc = `https://zora.co/collect/${chainContract}/embed?referrer=0x41CB654D1F47913ACAB158a8199191D160DAbe4A`;
+  const iframeSrc = `https://zora.co/collect/${chainContract}/embed?referrer=0x72ad986ebac0246d2b3c565ab2a1ce3a14ce6f88`;
 
   return (
     <iframe

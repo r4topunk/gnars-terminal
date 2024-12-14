@@ -1,7 +1,7 @@
 import { Box } from '@chakra-ui/react';
 import ZoraEmbed from '../utils/zora';
 
-interface ZoraCardProps {}
+interface ZoraCardProps { }
 async function ZoraCard(props: ZoraCardProps) {
   return (
     <Box
@@ -16,7 +16,7 @@ async function ZoraCard(props: ZoraCardProps) {
       height={'300px'}
     >
       <ZoraEmbed
-        chainContract={'base:0x3ac50ed10080d12fbb3fb1fc53524fa38ff67659/1'}
+        chainContract={'base:0x3ac50ed10080d12fbb3fb1fc53524fa38ff67659/2'}
       />
     </Box>
   );

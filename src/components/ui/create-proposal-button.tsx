@@ -4,9 +4,10 @@ import { Button } from '@chakra-ui/react';
 import { LuPencilLine } from 'react-icons/lu';
 import { useAccount } from 'wagmi';
 import { Address } from 'viem';
+import { useRouter } from 'next/navigation'; // Use Next.js navigation
 import { useReadGovernorGetVotes, useReadGovernorProposalThreshold } from '@/hooks/wagmiGenerated';
 
-function CheckIfProposalCanSubmitProposal() {
+function useCanSubmitProposal() {
     const { address } = useAccount();
     const [canSubmit, setCanSubmit] = useState(false);
     const [currentTimestamp, setCurrentTimestamp] = useState<BigInt | null>(null);
@@ -18,7 +19,7 @@ function CheckIfProposalCanSubmitProposal() {
     }, []);
 
     // Read votes dynamically
-    const { data: votes, error: votesError } = useReadGovernorGetVotes({
+    const { data: votes } = useReadGovernorGetVotes({
         args: address && currentTimestamp ? [address as Address, currentTimestamp as bigint] : undefined,
     });
 
@@ -31,22 +32,26 @@ function CheckIfProposalCanSubmitProposal() {
         }
     }, [votes, threshold]);
 
-    // Debugging
-    // useEffect(() => {
-    //     console.log("Address:", address);
-    //     console.log("Timestamp:", currentTimestamp);
-    //     console.log("Votes:", votes);
-    //     console.error("Votes Error:", votesError);
-    // }, [address, currentTimestamp, votes, votesError]);
-
     return canSubmit;
 }
 
 export default function CreateProposalButton() {
-    const canSubmit = CheckIfProposalCanSubmitProposal();
+    const canSubmit = useCanSubmitProposal();
+    const router = useRouter(); // Initialize router
+
+    const handleClick = () => {
+        if (canSubmit) {
+            router.push('/create-proposal'); // Navigate to the create proposal page
+        }
+    };
 
     return (
-        <Button colorScheme="blue" variant="outline" disabled={!canSubmit}>
+        <Button
+            colorScheme="blue"
+            variant="outline"
+            disabled={!canSubmit}
+            onClick={handleClick} // Handle navigation
+        >
             <LuPencilLine />
         </Button>
     );
