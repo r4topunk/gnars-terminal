@@ -12,9 +12,11 @@ import '@toast-ui/editor/dist/toastui-editor.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
+// Update the metadata without themeColor
 export const metadata: Metadata = {
   title: 'Gnars Terminal',
   description: 'Gnars Dao Essentials Tools Backup',
+  metadataBase: new URL('https://yourdomain.com'), // Replace with your domain
   openGraph: {
     images: [
       {
@@ -27,13 +29,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout(props: { children: ReactNode }) {
+// Add viewport configuration for themeColor
+export const viewport = {
+  themeColor: '#FFD700', // Replace with your desired color
+};
+
+export default function RootLayout({ children }: { children: ReactNode }) {
   const initialState = cookieToInitialState(
     getConfig(),
-    headers().get('cookie')
+    headers().get('cookie') // Fetch cookie headers dynamically
   );
+
   return (
-    <html lang='en' suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className} style={{ minHeight: '100vh' }}>
         <Providers initialState={initialState}>
           <Navbar />
@@ -44,7 +52,7 @@ export default function RootLayout(props: { children: ReactNode }) {
             color={{ base: 'black', _dark: 'white' }}
             paddingBlock={{ base: 2, md: 4 }}
           >
-            <Container maxW={'2xl'}>{props.children}</Container>
+            <Container maxW={'2xl'}>{children}</Container>
           </Box>
         </Providers>
       </body>

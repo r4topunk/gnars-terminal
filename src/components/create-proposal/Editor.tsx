@@ -1,21 +1,29 @@
-import React, { useRef } from "react";
-import dynamic from 'next/dynamic';
+import React, { forwardRef } from "react";
+import dynamic from "next/dynamic";
 
+// Dynamically load ToastEditor
 const ToastEditor = dynamic(() => import("@toast-ui/react-editor").then(mod => mod.Editor), { ssr: false });
 
-export default function Editor() {
-    const editorRef = useRef<typeof ToastEditor>(null);
+// Define the props for Editor
+type EditorProps = {
+    initialValue?: string;
+    previewStyle?: "vertical" | "tab";
+    height?: string;
+    initialEditType?: "markdown" | "wysiwyg";
+    useCommandShortcut?: boolean;
+    theme?: string;
+};
 
+const Editor = forwardRef<any, EditorProps>((props, ref) => {
     return (
         <ToastEditor
-            ref={editorRef}
-            initialValue="Write your proposal details here..."
-            previewStyle="vertical"
-            height="800px"
-            initialEditType="markdown"
-            useCommandShortcut={true}
-            theme="dark" // Apply the dark theme
-            _dark={{ color: 'white', borderColor: 'yellow', borderWidth: 1 }}
+            {...props}
+            ref={ref} // Forward the ref to the underlying ToastEditor
         />
     );
-}
+});
+
+// Add displayName for better debugging
+Editor.displayName = "Editor";
+
+export default Editor;
