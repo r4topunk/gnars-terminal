@@ -19,22 +19,34 @@ import {
     StepsCompletedContent,
 } from "@/components/ui/steps";
 import { LuFileText, LuPlus, LuCheckCircle } from "react-icons/lu";
+import TransactionTypes from "@/components/create-proposal/TransactionTypes";
+import TransactionList from "@/components/create-proposal/TransactionList";
+import TransactionItem from "@/components/create-proposal/TransactionItem";
 import Editor from "@/components/create-proposal/Editor";
-import TransactionTypes from "@/components/create-proposal/TransactionTypes"; // Import the new component
 
 const CreateProposalPage = () => {
     const [proposalTitle, setProposalTitle] = useState("");
-    const [transactions, setTransactions] = useState<string[]>([]);
-    const [showTransactionOptions, setShowTransactionOptions] = useState(false); // Toggle grid visibility
+    const [transactions, setTransactions] = useState<{ type: string; details: any }[]>([]);
+    const [currentTransactionType, setCurrentTransactionType] = useState<string | null>(null);
+    const [showTransactionOptions, setShowTransactionOptions] = useState(false);
     const editorRef = useRef<any>(null);
 
     const handleAddTransaction = () => {
-        setShowTransactionOptions(true); // Show the transaction options grid
+        setShowTransactionOptions(true);
     };
 
-    const handleSelectTransaction = (transactionType: string) => {
-        setTransactions([...transactions, transactionType]);
-        setShowTransactionOptions(false); // Hide the grid after selection
+    const handleSelectTransaction = (type: string) => {
+        setCurrentTransactionType(type);
+        setShowTransactionOptions(false);
+    };
+
+    const handleAddTransactionDetails = (transaction: { type: string; details: any }) => {
+        setTransactions([...transactions, transaction]);
+        setCurrentTransactionType(null);
+    };
+
+    const handleCancelTransaction = () => {
+        setCurrentTransactionType(null);
     };
 
     const handleSubmitProposal = () => {
@@ -60,16 +72,14 @@ const CreateProposalPage = () => {
             {/* Step 1: Proposal Title */}
             <StepsContent index={0}>
                 <VStack gap={4} align="stretch" p={4}>
-                    <Text fontSize="xl" fontWeight="bold">Proposal Title</Text>
+                    <Text fontSize="2xl" fontWeight="bold">Proposal Title</Text>
                     <Input
                         placeholder="Enter your proposal title"
                         value={proposalTitle}
                         onChange={(e) => setProposalTitle(e.target.value)}
                     />
                     {!isTitleValid && (
-                        <Text color="red.500" fontSize="sm">
-                            Title must be longer than 5 characters.
-                        </Text>
+                        <Text color="red.500">Title must be longer than 5 characters.</Text>
                     )}
                 </VStack>
             </StepsContent>
@@ -77,72 +87,69 @@ const CreateProposalPage = () => {
             {/* Step 2: Add Transactions */}
             <StepsContent index={1}>
                 <VStack gap={4} align="stretch" p={4}>
-                    <Text fontSize="xl" fontWeight="bold">Transactions</Text>
+                    <Text fontSize="2xl" fontWeight="bold">Transactions</Text>
 
-
-                    {showTransactionOptions ? (
+                    {currentTransactionType ? (
+                        <TransactionItem
+                            type={currentTransactionType}
+                            onAdd={handleAddTransactionDetails}
+                            onCancel={handleCancelTransaction}
+                        />
+                    ) : showTransactionOptions ? (
                         <TransactionTypes onSelect={handleSelectTransaction} />
                     ) : (
-                        <Box>
-                            {transactions.map((tx, idx) => (
-                                <Text key={idx}>{tx}</Text>
-                            ))}
-                        </Box>
+                        <>
+                            <TransactionList transactions={transactions} />
+                            <Button colorScheme="teal" onClick={handleAddTransaction}>
+                                Add Transaction
+                            </Button>
+                        </>
                     )}
-                    <Button colorScheme="teal" onClick={handleAddTransaction}>
-                        Add Transaction
-                    </Button>
                 </VStack>
             </StepsContent>
 
             {/* Step 3: Proposal Description */}
             <StepsContent index={2}>
                 <VStack gap={4} align="stretch" p={4}>
-                    <Text fontSize="xl" fontWeight="bold">Proposal Description</Text>
+                    <Text fontSize="2xl" fontWeight="bold">Proposal Description</Text>
                     <Editor ref={editorRef} />
                 </VStack>
             </StepsContent>
 
-            {/* Final Step: Review and Submit */}
+            {/* Review and Submit */}
             <StepsCompletedContent>
                 <VStack gap={4} align="stretch" p={4}>
-                    <Text fontSize="xl" fontWeight="bold">
-                        Review and Submit
-                    </Text>
+                    <Text fontSize="2xl" fontWeight="bold">Review and Submit</Text>
+                    <Text>Title: <strong>{proposalTitle}</strong></Text>
                     <Text>
-                        Title: <strong>{proposalTitle}</strong>
+                        Transactions:{" "}
+                        <strong>{transactions.map((tx) => tx.type).join(", ")}</strong>
                     </Text>
-                    <Text>
-                        Transactions: <strong>{transactions.join(", ")}</strong>
-                    </Text>
-                    <Button colorScheme="green" onClick={handleSubmitProposal}>
+                    <Button
+                        colorScheme="green"
+                        onClick={handleSubmitProposal}
+                        disabled={!isTitleValid || transactions.length === 0}
+                    >
                         Submit Proposal
                     </Button>
                 </VStack>
             </StepsCompletedContent>
 
+            {/* Navigation Buttons */}
             <Group mt={6} justify="space-between">
                 <StepsPrevTrigger asChild>
-                    <Button variant="outline" size="sm">
-                        Previous
-                    </Button>
+                    <Button variant="outline" size="sm">Previous</Button>
                 </StepsPrevTrigger>
-                {isTitleValid ? (
-                    <StepsNextTrigger asChild>
-                        <Button variant="solid" size="sm" colorScheme="teal">
-                            Next
-                        </Button>
-                    </StepsNextTrigger>
-                ) : (
+                <StepsNextTrigger asChild>
                     <Button
                         variant="solid"
                         size="sm"
                         colorScheme="teal"
-                        disabled
+                        disabled={!isTitleValid && !transactions.length}
                     >
                         Next
                     </Button>
-                )}
+                </StepsNextTrigger>
             </Group>
         </StepsRoot>
     );
