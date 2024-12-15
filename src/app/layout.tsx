@@ -16,7 +16,7 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'Gnars Terminal',
   description: 'Gnars Dao Essentials Tools Backup',
-  metadataBase: new URL('https://yourdomain.com'), // Replace with your domain
+  metadataBase: new URL('https://termignar.vercel.app/'), // Replace with your domain
   openGraph: {
     images: [
       {
