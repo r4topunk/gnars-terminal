@@ -6,12 +6,14 @@ import ProposalDescriptionContent from '@/components/proposal/ProposalDescriptio
 import ProposalTransactionsContent from '@/components/proposal/ProposalTransactionsContent';
 import ProposalVotesContent from '@/components/proposal/ProposalVotesContent';
 import ProposalStatus from '@/components/proposal/status';
+import { Tooltip } from '@/components/ui/tooltip';
 import { FormattedAddress } from '@/components/utils/ethereum';
 import {
   Box,
   Heading,
   HStack,
   IconButton,
+  Stack,
   Tabs,
   Text,
   VStack,
@@ -27,7 +29,6 @@ import {
   LuScroll,
   LuVote,
 } from 'react-icons/lu';
-import { Tooltip } from '@/components/ui/tooltip';
 
 interface ProposalPageClientProps {
   proposal: Proposal;
@@ -73,7 +74,8 @@ export default function ProposalPageClient({
         gap={2}
         _dark={{ borderColor: 'yellow', borderWidth: 1 }}
       >
-        <HStack
+        <Stack
+          direction={{ base: 'column', md: 'row' }}
           justify='space-between'
           w='full'
           data-state='open'
@@ -106,13 +108,13 @@ export default function ProposalPageClient({
           </HStack>
 
           <HStack>
-            <FormattedAddress address={proposal.proposer} />
             <ProposalStatus proposal={proposal} />
+            <FormattedAddress address={proposal.proposer} />
           </HStack>
-        </HStack>
+        </Stack>
 
         <Heading
-          size='4xl'
+          size={{ base: '2xl', md: '4xl' }}
           as='h1'
           data-state='open'
           _open={{

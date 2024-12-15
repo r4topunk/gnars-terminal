@@ -1,21 +1,12 @@
-import {
-  Card,
-  Stack,
-  Text,
-  Box,
-  Flex,
-  Badge,
-  VStack,
-  HStack,
-  Code,
-} from '@chakra-ui/react';
 import { Avatar } from '@/components/ui/avatar';
+import { Box, Card, Code, HStack, Stack, Text, VStack } from '@chakra-ui/react';
 import { FormattedAddress } from '../utils/ethereum';
-import { Tooltip } from '../ui/tooltip';
+
+export type VoteSupport = 'FOR' | 'AGAINST' | 'ABSTAIN';
 
 interface Vote {
   voter: string;
-  support: string; // e.g., "FOR", "AGAINST", "ABSTAIN"
+  support: VoteSupport;
   weight: string;
   reason: string;
 }
@@ -32,22 +23,15 @@ export default function ProposalVotesContent({
     <Stack gap={2} px={2} w='full'>
       {proposal.votes.map((vote, index) => (
         <Card.Root key={index} size='md' borderRadius='lg' variant='outline'>
-          {/* Header Section with Voter Information */}
-          {/* <Card.Header>
-            
-          </Card.Header> */}
-
-          {/* Body Section with Voting Details */}
           <Card.Body>
             <VStack gap={3} align='stretch'>
               <HStack gap={4}>
-                {/* Voter Avatar and Address */}
                 <Avatar
                   size='md'
                   name={vote.voter}
                   src={`https://api.dicebear.com/5.x/identicon/svg?seed=${vote.voter}`} // Example avatar
                 />
-                <HStack>
+                <HStack wrap={{ base: 'wrap', md: 'nowrap' }} gap={1}>
                   <FormattedAddress address={vote.voter} />
                   <Text>voted</Text>
                   <Code
@@ -65,7 +49,10 @@ export default function ProposalVotesContent({
                   >
                     {vote.support}
                   </Code>
-                  <Text>with {vote.weight} weight</Text>
+                  <Text>
+                    with <b>{vote.weight}</b> vote
+                    {parseInt(vote.weight) > 1 ? 's' : ''}
+                  </Text>
                 </HStack>
               </HStack>
               {vote.reason && (
