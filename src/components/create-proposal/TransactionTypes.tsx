@@ -10,7 +10,7 @@ const transactionOptions = [
     { name: "SEND USDC", image: "/images/usd-coin-usdc-logo.png" },
     { name: "SEND GNAR", image: "https://gnars.com/images/logo.png" },
     { name: "AIRDROP RANDOM GNAR", image: "/images/loading.gif" },
-    { name: "DROP PROPOSAL MINT", image: "/images/Zorb.png" },
+    { name: "DROPOSAL MINT", image: "/images/Zorb.png" },
     { name: "SEND IT", image: "/images/sendit.jpg" },
     { name: "CUSTOM TRANSACTION", image: "/images/brainhead.png" },
 ];

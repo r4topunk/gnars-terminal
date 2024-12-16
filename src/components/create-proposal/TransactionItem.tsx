@@ -47,7 +47,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ type, onAdd, onCancel
                 return [
                     { name: "numRecipients", placeholder: "Enter number of recipients" }
                 ];
-            case "DROP PROPOSAL MINT":
+            case "DROPOSAL MINT":
                 return [
                     { name: "name", placeholder: "Name" },
                     { name: "symbol", placeholder: "Symbol" },

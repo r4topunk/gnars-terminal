@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
     VStack,
@@ -26,47 +26,56 @@ import TransactionItem from "@/components/create-proposal/TransactionItem";
 import Editor from "@/components/create-proposal/Editor";
 import Markdown from "@/components/proposal/markdown";
 
+interface Transaction {
+    type: string;
+    details: any;
+}
+
+interface FormData {
+    proposalTitle: string;
+    editorContent: string;
+}
+
 const CreateProposalPage = () => {
-    const { control, handleSubmit, watch, setValue } = useForm();
-    const [transactions, setTransactions] = useState<{ type: string; details: any }[]>([]);
+    const { control, handleSubmit, watch, setValue } = useForm<FormData>();
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [currentTransactionType, setCurrentTransactionType] = useState<string | null>(null);
     const [showTransactionOptions, setShowTransactionOptions] = useState(false);
     const editorRef = useRef<any>(null);
-    const [initialEditorValue, setInitialEditorValue] = useState<string | null>(null);
 
     const proposalTitle = watch("proposalTitle");
     const editorContent = watch("editorContent");
 
-    const handleAddTransaction = () => {
+    const handleAddTransaction = useCallback(() => {
         setShowTransactionOptions(true);
-    };
+    }, []);
 
-    const handleSelectTransaction = (type: string) => {
+    const handleSelectTransaction = useCallback((type: string) => {
         setCurrentTransactionType(type);
         setShowTransactionOptions(false);
-    };
+    }, []);
 
-    const handleAddTransactionDetails = (transaction: { type: string; details: any }) => {
-        setTransactions([...transactions, transaction]);
+    const handleAddTransactionDetails = useCallback((transaction: Transaction) => {
+        setTransactions((prevTransactions) => [...prevTransactions, transaction]);
         setCurrentTransactionType(null);
-    };
+    }, []);
 
-    const handleCancelTransaction = () => {
+    const handleCancelTransaction = useCallback(() => {
         setCurrentTransactionType(null);
-    };
+    }, []);
 
-    const handleDeleteTransaction = (index: number) => {
-        setTransactions(transactions.filter((_, idx) => idx !== index));
-    };
+    const handleDeleteTransaction = useCallback((index: number) => {
+        setTransactions((prevTransactions) => prevTransactions.filter((_, idx) => idx !== index));
+    }, []);
 
-    const onSubmit = (data: any) => {
+    const onSubmit = useCallback((data: FormData) => {
         console.log({
             title: data.proposalTitle,
             transactions,
             details: data.editorContent,
         });
         alert("Proposal submitted! Check the console for details.");
-    };
+    }, [transactions]);
 
     const isTitleValid = proposalTitle?.length > 5;
 
@@ -87,16 +96,19 @@ const CreateProposalPage = () => {
                             name="proposalTitle"
                             control={control}
                             defaultValue=""
-                            render={({ field }) => (
-                                <Input
-                                    placeholder="Enter your proposal title"
-                                    {...field}
-                                />
+                            rules={{ required: "Title is required", minLength: { value: 6, message: "Title must be longer than 5 characters" } }}
+                            render={({ field, fieldState }) => (
+                                <>
+                                    <Input
+                                        placeholder="Enter your proposal title"
+                                        {...field}
+                                    />
+                                    {fieldState.error && (
+                                        <Text color="red.500">{fieldState.error.message}</Text>
+                                    )}
+                                </>
                             )}
                         />
-                        {!isTitleValid && (
-                            <Text color="red.500">Title must be longer than 5 characters.</Text>
-                        )}
                     </VStack>
                 </StepsContent>
 
@@ -150,9 +162,16 @@ const CreateProposalPage = () => {
                         <Text fontSize="2xl" fontWeight="bold">Review and Submit</Text>
                         <Text>Title: <strong>{proposalTitle}</strong></Text>
                         <TransactionList transactions={transactions} onDelete={handleDeleteTransaction} />
-                        <Markdown
-                            text={editorContent}
-                        />
+                        <Box
+                            borderWidth="1px"
+                            borderRadius="md"
+                            borderColor={editorContent ? "gray.300" : "red.500"}
+                            p={4}
+                        >
+                            <Markdown
+                                text={editorContent}
+                            />
+                        </Box>
                         <Button
                             colorScheme="green"
                             type="submit"
