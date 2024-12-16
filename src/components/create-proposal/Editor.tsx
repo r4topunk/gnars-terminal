@@ -2,6 +2,7 @@
 
 import React from "react";
 import MDEditor from "@uiw/react-md-editor";
+import { useColorMode } from "../ui/color-mode";
 
 interface EditorProps {
     value?: string;
@@ -15,23 +16,25 @@ interface EditorProps {
 const Editor: React.FC<EditorProps> = ({
     value = "",
     onChange,
-    height = 700, // Default to 500px height
-    preview = "live", // Default to live preview
-    visibleDragbar = true, // Allow drag to resize height
-    fullscreen = false, // Start in normal mode
+    height = 700,
+    preview = "live",
+    visibleDragbar = true,
+    fullscreen = false,
 }) => {
+    const { colorMode } = useColorMode(); // Get the current color mode ("light" or "dark")
+
     return (
-        <div data-color-mode="dark">
+        <div data-color-mode={colorMode}> {/* Dynamically set the mode */}
             <MDEditor
                 value={value}
                 onChange={onChange}
-                height={height} // Customizable height
-                preview={preview} // Control preview mode
-                visibleDragbar={visibleDragbar} // Allow drag-to-resize functionality
-                fullscreen={fullscreen} // Fullscreen editing mode
-                highlightEnable={true} // Enable syntax highlighting
-                tabSize={4} // Use 4 spaces for tab
-                hideToolbar={false} // Show toolbar
+                height={height}
+                preview={preview}
+                visibleDragbar={visibleDragbar}
+                fullscreen={fullscreen}
+                highlightEnable={true}
+                tabSize={4}
+                hideToolbar={false}
             />
         </div>
     );
