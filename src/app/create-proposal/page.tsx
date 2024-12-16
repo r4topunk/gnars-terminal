@@ -28,7 +28,7 @@ import Markdown from "@/components/proposal/markdown";
 import { USDC_CONTRACT_ADDRESS } from "@/utils/constants";
 import { Address, encodeFunctionData } from "viem";
 import USDC_ABI from "@/components/proposal/transactions/utils/USDC_abi";
-import { governorAddress, tokenAbi, useWriteGovernorPropose } from "@/hooks/wagmiGenerated";
+import { governorAddress, tokenAbi, tokenAddress, useWriteGovernorPropose } from "@/hooks/wagmiGenerated";
 import { useReadGovernorTreasury } from "@/hooks/wagmiGenerated";
 interface Transaction {
     type: string;
@@ -143,7 +143,123 @@ const CreateProposalPage = () => {
                     calldata: encodedCalldata, // Encoded calldata
                 };
 
-            } else {
+            }
+            else if (transaction.type === "AIRDROP RANDOM GNAR") {
+                // example transaction    
+                //             0x880fb3cf5c6cc2d7dfc13a993e839a9411200c17
+                //                     .mintBatchTo(
+                //                         amount: 1
+                // recipient: 0x29C03FEe4BA44AEb1BD63B95A73aeFfFd6E6Ec66
+                //                     )
+                console.log("Transaction: ", transaction);
+                const recipient = transaction.details.toAddress;
+                const amount = transaction.details.amount;
+                console.log("Recipient:", recipient);
+                const encodedCalldata = encodeFunctionData({
+                    abi: tokenAbi,
+                    functionName: "mintBatchTo",
+                    args: [
+                        //amount
+                        amount,
+                        //recipient
+                        recipient as Address,
+                    ],
+
+                });
+
+                console.log("Encoded calldata:", encodedCalldata);
+                return {
+                    target: tokenAddress as Address, // NFT contract
+                    value: "0", // No ETH value for token transfers
+                    calldata: encodedCalldata, // Encoded calldata
+                };
+
+            }
+            // else if (transaction.type === "DROPOSAL MINT") {
+            //     const recipient = transaction.details.address;
+            //     const tokenId = transaction.details.tokenID;
+            //     console.log("Transaction: ", transaction);
+            //     console.log("Transaction details:", transaction.details);
+            //     console.log("Recipient:", recipient);
+            //     console.log("Token ID:", tokenId);
+            //     const encodedCalldata = encodeFunctionData({
+            //         abi: tokenAbi,
+            //         functionName: "transferFrom",
+            //         args: [
+            //             //from
+            //             ReadGovernorTreasure.data as Address,
+            //             //to
+            //             recipient as Address,
+            //             //tokenId
+            //             tokenId,
+            //         ],
+
+            //     });
+            //     console.log("Encoded calldata:", encodedCalldata);
+            //     return {
+            //         target: ReadGovernorTreasure.data as Address, // NFT contract
+            //         value: "0", // No ETH value for token transfers
+            //         calldata: encodedCalldata, // Encoded calldata
+            //     };
+
+            // }
+            // else if (transaction.type === "SEND IT") {
+            //     const recipient = transaction.details.address;
+            //     const tokenId = transaction.details.tokenID;
+            //     console.log("Transaction: ", transaction);
+            //     console.log("Transaction details:", transaction.details);
+            //     console.log("Recipient:", recipient);
+            //     console.log("Token ID:", tokenId);
+            //     const encodedCalldata = encodeFunctionData({
+            //         abi: tokenAbi,
+            //         functionName: "transferFrom",
+            //         args: [
+            //             //from
+            //             ReadGovernorTreasure.data as Address,
+            //             //to
+            //             recipient as Address,
+            //             //tokenId
+            //             tokenId,
+            //         ],
+
+            //     });
+            //     console.log("Encoded calldata:", encodedCalldata);
+            //     return {
+            //         target: ReadGovernorTreasure.data as Address, // NFT contract
+            //         value: "0", // No ETH value for token transfers
+            //         calldata: encodedCalldata, // Encoded calldata
+            //     };
+
+            // }
+            // else if (transaction.type === "CUSTOM TRANSACTION") {
+            //     const recipient = transaction.details.address;
+            //     const tokenId = transaction.details.tokenID;
+            //     console.log("Transaction: ", transaction);
+            //     console.log("Transaction details:", transaction.details);
+            //     console.log("Recipient:", recipient);
+            //     console.log("Token ID:", tokenId);
+            //     const encodedCalldata = encodeFunctionData({
+            //         abi: tokenAbi,
+            //         functionName: "transferFrom",
+            //         args: [
+            //             //from
+            //             ReadGovernorTreasure.data as Address,
+            //             //to
+            //             recipient as Address,
+            //             //tokenId
+            //             tokenId,
+            //         ],
+
+            //     });
+            //     console.log("Encoded calldata:", encodedCalldata);
+            //     return {
+            //         target: ReadGovernorTreasure.data as Address, // NFT contract
+            //         value: "0", // No ETH value for token transfers
+            //         calldata: encodedCalldata, // Encoded calldata
+            //     };
+
+            // }
+            else {
                 // Handle other transaction types here
                 return { target: "", value: "", calldata: "" };
             }

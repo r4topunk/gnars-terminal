@@ -45,7 +45,8 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ type, onAdd, onCancel
                 ];
             case "AIRDROP RANDOM GNAR":
                 return [
-                    { name: "numRecipients", placeholder: "Enter number of recipients" }
+                    { name: "toAddress", placeholder: "Address" },
+                    { name: "amount", placeholder: "Amount" }
                 ];
             case "DROPOSAL MINT":
                 return [
