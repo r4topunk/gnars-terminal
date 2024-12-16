@@ -1,13 +1,14 @@
 import React from "react";
-import { VStack, Box, Text } from "@chakra-ui/react";
+import { VStack, Box, Text, Button } from "@chakra-ui/react";
 
 type TransactionDetails = Record<string, string | number | React.ReactNode>;
 
 type TransactionListProps = {
     transactions: { type: string; details: TransactionDetails }[];
+    onDelete: (index: number) => void;
 };
 
-const TransactionList: React.FC<TransactionListProps> = ({ transactions }) => {
+const TransactionList: React.FC<TransactionListProps> = ({ transactions, onDelete }) => {
     return (
         <VStack gap={4} align="stretch" p={4}>
             {transactions.length === 0 ? (
@@ -28,6 +29,9 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions }) => {
                                 {key}: <strong>{String(value)}</strong>
                             </Text>
                         ))}
+                        <Button colorScheme="red" size="sm" mt={2} onClick={() => onDelete(idx)}>
+                            Delete
+                        </Button>
                     </Box>
                 ))
             )}
