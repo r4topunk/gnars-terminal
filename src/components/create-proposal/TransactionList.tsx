@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { VStack, Box, Text, Button } from "@chakra-ui/react";
 
 type TransactionDetails = Record<string, string | number | React.ReactNode>;
@@ -9,6 +9,12 @@ type TransactionListProps = {
 };
 
 const TransactionList: React.FC<TransactionListProps> = ({ transactions, onDelete }) => {
+    const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+
+    const toggleExpand = (index: number) => {
+        setExpandedIndex(expandedIndex === index ? null : index);
+    };
+
     return (
         <VStack gap={4} align="stretch" p={4}>
             {transactions.length === 0 ? (
@@ -23,15 +29,21 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onDelet
                         bg="gray.50"
                         _dark={{ bg: "gray.700" }}
                     >
-                        <Text fontWeight="bold">{tx.type}</Text>
-                        {Object.entries(tx.details).map(([key, value]) => (
-                            <Text key={key}>
-                                {key}: <strong>{String(value)}</strong>
-                            </Text>
-                        ))}
-                        <Button colorScheme="red" size="sm" mt={2} onClick={() => onDelete(idx)}>
-                            Delete
-                        </Button>
+                        <Text fontWeight="bold" onClick={() => toggleExpand(idx)} cursor="pointer">
+                            {tx.type} - {tx.details.amount} to {tx.details.address}
+                        </Text>
+                        {expandedIndex === idx && (
+                            <>
+                                {Object.entries(tx.details).map(([key, value]) => (
+                                    <Text key={key}>
+                                        {key}: <strong>{String(value)}</strong>
+                                    </Text>
+                                ))}
+                                <Button colorScheme="red" size="sm" mt={2} onClick={() => onDelete(idx)}>
+                                    Delete
+                                </Button>
+                            </>
+                        )}
                     </Box>
                 ))
             )}

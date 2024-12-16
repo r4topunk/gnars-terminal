@@ -1,10 +1,11 @@
 "use client";
 
 import React from "react";
-import { VStack, Text } from "@chakra-ui/react";
+import { VStack, Text, HStack } from "@chakra-ui/react";
 import TransactionForm from "./TransactionForm";
 import { USDC_CONTRACT_ADDRESS } from "@/utils/constants";
 import { isAddress } from 'viem';
+import { LuChevronDown } from "react-icons/lu";
 
 type TransactionItemProps = {
     type: string;
@@ -81,7 +82,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ type, onAdd, onCancel
                 tokenAddress,
                 decimals,
             };
-            onAdd({ type: transaction.type, details });
+            onAdd({ type: `${transaction.type} (${parsedAmount})`, details });
         } else {
             onAdd(transaction);
         }
@@ -89,9 +90,12 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ type, onAdd, onCancel
 
     return (
         <VStack gap={4} align="stretch" p={4} borderWidth="1px" borderRadius="md">
-            <Text fontWeight="bold" fontSize="lg">
-                {type}
-            </Text>
+            <HStack justifyContent="space-between">
+                <Text fontWeight="bold" fontSize="lg">
+                    {type}
+                </Text>
+                <LuChevronDown />
+            </HStack>
             <TransactionForm
                 type={type}
                 fields={fields}
