@@ -5,12 +5,14 @@ import {
   useWriteAuctionSettleCurrentAndCreateNewAuction,
 } from '@/hooks/wagmiGenerated';
 import { convertSparksToEth } from '@/utils/spark';
+import { getConfig } from '@/utils/wagmi';
 import { Button, Link as ChakraLink, HStack, VStack } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { useCallback, useState } from 'react';
 import { LuExternalLink } from 'react-icons/lu';
 import { parseEther } from 'viem';
 import { useAccount } from 'wagmi';
+import { waitForTransactionReceipt } from 'wagmi/actions';
 import { NumberInputField, NumberInputRoot } from '../ui/number-input';
 import { Tooltip } from '../ui/tooltip';
 
@@ -38,6 +40,10 @@ export function AuctionBid(props: BidProps) {
         args: [tokenId],
         value: parseEther(convertSparksToEth(bidValue)),
       });
+      const receipt = await waitForTransactionReceipt(getConfig(), {
+        hash: txHash,
+      });
+      console.log('Bid receipt', receipt);
       setTxHash(txHash);
       if (props.onBid) {
         props.onBid();
@@ -50,13 +56,17 @@ export function AuctionBid(props: BidProps) {
         window.alert('Error creating bid');
       }
     }
-  }, [writeBid, bidValue]);
+  }, [tokenId, writeBid, bidValue]);
 
   const { writeContractAsync: writeSettle } =
     useWriteAuctionSettleCurrentAndCreateNewAuction();
   const onClickSettle = useCallback(async () => {
     try {
       const txHash = await writeSettle({});
+      const receipt = await waitForTransactionReceipt(getConfig(), {
+        hash: txHash,
+      });
+      console.log('Settle receipt', receipt);
       setTxHash(txHash);
       if (props.onSettle) {
         props.onSettle();
@@ -69,7 +79,7 @@ export function AuctionBid(props: BidProps) {
         window.alert('Error settling auction');
       }
     }
-  }, [writeSettle]);
+  }, [tokenId, writeSettle]);
 
   return (
     <VStack align={'stretch'} gap={0} w={'full'}>
@@ -103,7 +113,7 @@ export function AuctionBid(props: BidProps) {
               <NumberInputField />
             </NumberInputRoot>
             <Button
-              variant={'subtle'}
+              variant={'surface'}
               onClick={onClickBid}
               disabled={
                 account.isDisconnected ||
@@ -116,10 +126,10 @@ export function AuctionBid(props: BidProps) {
           </>
         ) : (
           <Button
-            variant={'solid'}
+            variant={'surface'}
             onClick={onClickSettle}
             disabled={account.isDisconnected}
-            w={{ base: 'full', md: 60 }}
+            w={'full'}
           >
             Settle auction
           </Button>

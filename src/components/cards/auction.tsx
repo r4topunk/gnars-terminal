@@ -19,6 +19,7 @@ import {
   useWatchAuctionAuctionBidEvent,
   useWatchAuctionAuctionSettledEvent,
 } from '@/hooks/wagmiGenerated';
+import { revalidatePath } from 'next/cache';
 
 export default function AuctionCard({
   defaultAuction,
@@ -32,6 +33,7 @@ export default function AuctionCard({
       // @todo: remove logs
       console.log('AuctionBidEvent', logs);
       refetch();
+      revalidatePath('/');
     },
   });
 
@@ -40,6 +42,7 @@ export default function AuctionCard({
       // @todo: remove logs
       console.log('AuctionSettledEvent', logs);
       refetch();
+      revalidatePath('/');
     },
   });
 
@@ -100,6 +103,14 @@ export default function AuctionCard({
         justify={'space-between'}
         w={'full'}
       >
+        <Image asChild rounded={'md'} w={'full'} maxW={{ md: '50%' }}>
+          <NextImage
+            width={1024}
+            height={1024}
+            src={activeAuction.token.image}
+            alt={`Auction token id ${activeAuction.token.tokenId}`}
+          />
+        </Image>
         <VStack align={'stretch'} gap={2} w={'full'}>
           <Heading as='h2'>Auction #{activeAuction.token.tokenId}</Heading>
           {activeAuction.highestBid ? (
@@ -119,7 +130,7 @@ export default function AuctionCard({
             <Text>No bids {isAuctionRunning ? 'yet' : ''}</Text>
           )}
           <AuctionBid
-            tokenId={activeAuction.token.tokenId}
+            tokenId={BigInt(activeAuction.token.tokenId)}
             winningBid={
               activeAuction.winningBid
                 ? BigInt(activeAuction.winningBid.amount)
@@ -130,14 +141,6 @@ export default function AuctionCard({
             onSettle={refetch}
           />
         </VStack>
-        <Image asChild rounded={'md'} w={'full'} maxW={{ md: '240px' }}>
-          <NextImage
-            width={1024}
-            height={1024}
-            src={activeAuction.token.image}
-            alt={`Auction token id ${activeAuction.token.tokenId}`}
-          />
-        </Image>
       </Stack>
     </VStack>
   );
