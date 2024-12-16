@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { VStack, Box, Text, Button } from "@chakra-ui/react";
+import { VStack, Box, Text, Button, HStack } from "@chakra-ui/react";
+import { FormattedAddress } from "../utils/ethereum";
+import { LuChevronDown, LuChevronUp } from "react-icons/lu";
 
 type TransactionDetails = Record<string, string | number | React.ReactNode>;
 
@@ -15,6 +17,7 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onDelet
         setExpandedIndex(expandedIndex === index ? null : index);
     };
 
+
     return (
         <VStack gap={4} align="stretch" p={4}>
             {transactions.length === 0 ? (
@@ -29,9 +32,17 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onDelet
                         bg="gray.50"
                         _dark={{ bg: "gray.700" }}
                     >
-                        <Text fontWeight="bold" onClick={() => toggleExpand(idx)} cursor="pointer">
-                            {tx.type} - {tx.details.amount} to {tx.details.address}
-                        </Text>
+                        <HStack justify="space-between">
+                            <Text fontWeight="bold" onClick={() => toggleExpand(idx)} cursor="pointer">
+                                {tx.type}
+                            </Text>
+
+                            {expandedIndex === idx ? (
+                                <LuChevronUp onClick={() => toggleExpand(idx)} cursor="pointer" />
+                            ) : (
+                                <LuChevronDown onClick={() => toggleExpand(idx)} cursor="pointer" />
+                            )}
+                        </HStack>
                         {expandedIndex === idx && (
                             <>
                                 {Object.entries(tx.details).map(([key, value]) => (

@@ -137,7 +137,6 @@ const CreateProposalPage = () => {
                                     value={field.value} // Pass the form value to the editor
                                     onChange={(content) => {
                                         field.onChange(content); // Update react-hook-form state
-                                        console.log("Markdown content updated:", content);
                                     }}
                                 />
                             )}
@@ -150,12 +149,7 @@ const CreateProposalPage = () => {
                     <VStack gap={4} align="stretch" p={4}>
                         <Text fontSize="2xl" fontWeight="bold">Review and Submit</Text>
                         <Text>Title: <strong>{proposalTitle}</strong></Text>
-                        <Text>
-                            Transactions:{" "}
-                            <strong>{transactions.map((tx) => tx.type).join(", ")}</strong>
-                            <TransactionList transactions={transactions} onDelete={handleDeleteTransaction} />
-                        </Text>
-                        <Text>Editor Content: <strong>{editorContent}</strong></Text>
+                        <TransactionList transactions={transactions} onDelete={handleDeleteTransaction} />
                         <Markdown
                             text={editorContent}
                         />
