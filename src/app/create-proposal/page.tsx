@@ -25,7 +25,9 @@ import TransactionList from "@/components/create-proposal/TransactionList";
 import TransactionItem from "@/components/create-proposal/TransactionItem";
 import Editor from "@/components/create-proposal/Editor";
 import Markdown from "@/components/proposal/markdown";
-
+import { USDC_CONTRACT_ADDRESS } from "@/utils/constants";
+import { encodeFunctionData } from "viem";
+import USDC_ABI from "@/components/proposal/transactions/utils/USDC_abi";
 interface Transaction {
     type: string;
     details: any;
@@ -69,13 +71,58 @@ const CreateProposalPage = () => {
     }, []);
 
     const onSubmit = useCallback((data: FormData) => {
+        const description = `${data.proposalTitle}&&${data.editorContent}`;
+        console.log("Form data:", data);
+        // Prepare transaction data
+        const preparedTransactions = transactions.map((transaction) => {
+            if (transaction.type === "SEND ETH (1)") {
+                return {
+                    target: transaction.details.address, // Target is destination wallet
+                    value: transaction.details.amount, // ETH amount
+                    calldata: "0x", // No calldata for ETH
+                };
+            } else if (transaction.type === "USDC Transfer") {
+                const usdcAddress = USDC_CONTRACT_ADDRESS
+                const encodedCalldata = encodeUSDCTransfer(
+                    transaction.details.address,
+                    transaction.details.amount,
+                    transaction.details.decimals
+                );
+                console.log("Encoded calldata:", encodedCalldata);
+                return {
+                    target: usdcAddress, // USDC contract
+                    value: "0", // No ETH value for token transfers
+                    calldata: encodedCalldata, // Encoded calldata
+                };
+            } else {
+                // Handle other transaction types here
+                return { target: "", value: "", calldata: "" };
+            }
+        });
+
         console.log({
             title: data.proposalTitle,
-            transactions,
-            details: data.editorContent,
+            description,
+            transactions: preparedTransactions,
         });
-        alert("Proposal submitted! Check the console for details.");
+
+        alert("Proposal prepared! Check the console for details.");
     }, [transactions]);
+
+    // Helper function for USDC transfer calldata encoding
+    const encodeUSDCTransfer = (recipient: string, amount: string, decimals: number) => {
+        // Calculate the token amount based on decimals
+        const adjustedAmount = BigInt(amount) * BigInt(10 ** decimals);
+
+        // Encode the function data
+        const calldata = encodeFunctionData({
+            abi: USDC_ABI,
+            functionName: "transfer",
+            args: [recipient, adjustedAmount],
+        });
+        console.log("Encoded calldata:", calldata);
+        return calldata;
+    };
 
     const isTitleValid = proposalTitle?.length > 5;
 
