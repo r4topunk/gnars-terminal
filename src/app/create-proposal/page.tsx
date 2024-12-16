@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback, use } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
     VStack,
@@ -28,6 +28,7 @@ import Markdown from "@/components/proposal/markdown";
 import { USDC_CONTRACT_ADDRESS } from "@/utils/constants";
 import { encodeFunctionData } from "viem";
 import USDC_ABI from "@/components/proposal/transactions/utils/USDC_abi";
+import { governorAddress, useWriteGovernorPropose } from "@/hooks/wagmiGenerated";
 interface Transaction {
     type: string;
     details: any;
@@ -44,7 +45,7 @@ const CreateProposalPage = () => {
     const [currentTransactionType, setCurrentTransactionType] = useState<string | null>(null);
     const [showTransactionOptions, setShowTransactionOptions] = useState(false);
     const editorRef = useRef<any>(null);
-
+    const { writeContractAsync: writeProposal } = useWriteGovernorPropose();
     const proposalTitle = watch("proposalTitle");
     const editorContent = watch("editorContent");
 
@@ -69,19 +70,35 @@ const CreateProposalPage = () => {
     const handleDeleteTransaction = useCallback((index: number) => {
         setTransactions((prevTransactions) => prevTransactions.filter((_, idx) => idx !== index));
     }, []);
+    // Helper function for USDC transfer calldata encoding
+    const encodeUSDCTransfer = (recipient: string, amount: string, decimals: number) => {
+        // Calculate the token amount based on decimals
+        const adjustedAmount = BigInt(amount) * BigInt(10 ** decimals);
 
+        // Encode the function data
+        const calldata = encodeFunctionData({
+            abi: USDC_ABI,
+            functionName: "transfer",
+            args: [recipient, adjustedAmount],
+        });
+        console.log("Encoded calldata:", calldata);
+        return calldata;
+    };
     const onSubmit = useCallback((data: FormData) => {
         const description = `${data.proposalTitle}&&${data.editorContent}`;
         console.log("Form data:", data);
+        console.log("Transactions:", transactions);
         // Prepare transaction data
         const preparedTransactions = transactions.map((transaction) => {
-            if (transaction.type === "SEND ETH (1)") {
+            console.log("Transaction type:", transaction.type);
+            if (transaction.type === "SEND ETH") {
+                console.log("Transaction details:", transaction.details);
                 return {
                     target: transaction.details.address, // Target is destination wallet
                     value: transaction.details.amount, // ETH amount
                     calldata: "0x", // No calldata for ETH
                 };
-            } else if (transaction.type === "USDC Transfer") {
+            } else if (transaction.type === "SEND USDC") {
                 const usdcAddress = USDC_CONTRACT_ADDRESS
                 const encodedCalldata = encodeUSDCTransfer(
                     transaction.details.address,
@@ -106,23 +123,20 @@ const CreateProposalPage = () => {
             transactions: preparedTransactions,
         });
 
+        console.log(governorAddress);
+        writeProposal({
+            args: [
+                preparedTransactions.map((transaction) => transaction.target),
+                preparedTransactions.map((transaction) => transaction.value),
+                preparedTransactions.map((transaction) => transaction.calldata as `0x${string}`),
+                description,
+            ],
+        });
+
         alert("Proposal prepared! Check the console for details.");
     }, [transactions]);
 
-    // Helper function for USDC transfer calldata encoding
-    const encodeUSDCTransfer = (recipient: string, amount: string, decimals: number) => {
-        // Calculate the token amount based on decimals
-        const adjustedAmount = BigInt(amount) * BigInt(10 ** decimals);
 
-        // Encode the function data
-        const calldata = encodeFunctionData({
-            abi: USDC_ABI,
-            functionName: "transfer",
-            args: [recipient, adjustedAmount],
-        });
-        console.log("Encoded calldata:", calldata);
-        return calldata;
-    };
 
     const isTitleValid = proposalTitle?.length > 5;
 

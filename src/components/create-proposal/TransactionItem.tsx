@@ -82,7 +82,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ type, onAdd, onCancel
                 tokenAddress,
                 decimals,
             };
-            onAdd({ type: `${transaction.type} (${transaction.details.amount})`, details });
+            onAdd({ type: `${transaction.type}`, details });
         } else {
             onAdd(transaction);
         }

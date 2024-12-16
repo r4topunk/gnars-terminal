@@ -21,7 +21,7 @@ const Editor: React.FC<EditorProps> = ({
     visibleDragbar = true,
     fullscreen = false,
 }) => {
-    const { colorMode } = useColorMode(); // Get the current color mode ("light" or "dark")
+    const { colorMode } = useColorMode() as { colorMode: "light" | "dark" }; // Get the current color mode ("light" or "dark")
 
     return (
         <div data-color-mode={colorMode}> {/* Dynamically set the mode */}
@@ -35,6 +35,7 @@ const Editor: React.FC<EditorProps> = ({
                 highlightEnable={true}
                 tabSize={4}
                 hideToolbar={false}
+                data-color-mode={colorMode}
             />
         </div>
     );
