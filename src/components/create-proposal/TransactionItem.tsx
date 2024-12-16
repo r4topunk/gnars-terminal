@@ -29,7 +29,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ type, onAdd, onCancel
             case "SEND USDC":
                 return { tokenAddress: USDC_CONTRACT_ADDRESS, decimals: 6 };
             case "SEND IT":
-                return { tokenAddress: "0x0000000000000000000000000000000000000000", decimals: 18 }; // Replace with actual token address and decimals
+                return { tokenAddress: "0xba5b9b2d2d06a9021eb3190ea5fb0e02160839a4", decimals: 18 };
             default:
                 return { tokenAddress: "", decimals: 18 };
         }
