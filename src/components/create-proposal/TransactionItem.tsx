@@ -1,13 +1,10 @@
 "use client";
 
 import React from "react";
-import { VStack, Input, Button, Text, HStack } from "@chakra-ui/react";
-import ProposalTransactionInputs from "./ProposalTransactionsInputs";
-import SendERC20Transaction from "./SendERC20Transaction";
-import SendGnarTransaction from "./SendGnarTransaction";
-import AirdropRandomGnarTransaction from "./AirdropRandomGnarTransaction";
-import CustomTransaction from "./CustomTransaction";
+import { VStack, Text } from "@chakra-ui/react";
+import TransactionForm from "./TransactionForm";
 import { USDC_CONTRACT_ADDRESS } from "@/utils/constants";
+import { isAddress } from 'viem';
 
 type TransactionItemProps = {
     type: string;
@@ -16,12 +13,6 @@ type TransactionItemProps = {
 };
 
 const TransactionItem: React.FC<TransactionItemProps> = ({ type, onAdd, onCancel }) => {
-    const [amount, setAmount] = React.useState("");
-    const [address, setAddress] = React.useState("");
-    const [tokenID, setTokenID] = React.useState("");
-    const [numRecipients, setNumRecipients] = React.useState(""); // New state for number of recipients
-    const [customData, setCustomData] = React.useState(""); // New state for custom transaction data
-
     const getTokenDetails = (type: string) => {
         switch (type) {
             case "SEND ETH":
@@ -37,20 +28,63 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ type, onAdd, onCancel
 
     const { tokenAddress, decimals } = getTokenDetails(type);
 
-    const handleAddBasic = () => {
-        const details =
-            type === "SEND GNAR" ? { tokenID, address } : { amount, address };
-        onAdd({ type, details });
-    };
+    const fields = (() => {
+        switch (type) {
+            case "SEND ETH":
+            case "SEND USDC":
+            case "SEND IT":
+                return [
+                    { name: "amount", placeholder: "Enter amount" },
+                    { name: "address", placeholder: "Enter destination address", validate: (value: string) => isAddress(value) || "Invalid Ethereum address." }
+                ];
+            case "SEND GNAR":
+                return [
+                    { name: "tokenID", placeholder: "Enter token ID" },
+                    { name: "address", placeholder: "Enter destination address", validate: (value: string) => isAddress(value) || "Invalid Ethereum address." }
+                ];
+            case "AIRDROP RANDOM GNAR":
+                return [
+                    { name: "numRecipients", placeholder: "Enter number of recipients" }
+                ];
+            case "DROP PROPOSAL MINT":
+                return [
+                    { name: "name", placeholder: "Name" },
+                    { name: "symbol", placeholder: "Symbol" },
+                    { name: "description", placeholder: "Description" },
+                    { name: "media", placeholder: "Media URL" },
+                    { name: "price", placeholder: "Price (ETH)" },
+                    { name: "editionType", placeholder: "Edition Type" },
+                    { name: "editionSize", placeholder: "Edition Size" },
+                    { name: "startTime", placeholder: "Start Time (yyyy-mm-dd)" },
+                    { name: "endTime", placeholder: "End Time (yyyy-mm-dd)" },
+                    { name: "mintLimit", placeholder: "Mint Limit Per Address" },
+                    { name: "royalty", placeholder: "Royalty (%)" },
+                    { name: "payoutAddress", placeholder: "Payout Address" },
+                    { name: "adminAddress", placeholder: "Default Admin Address" },
+                ];
+            case "CUSTOM TRANSACTION":
+                return [
+                    { name: "customData", placeholder: "Enter custom transaction data" }
+                ];
+            default:
+                return [];
+        }
+    })();
 
-    const handleAddAirdrop = () => {
-        const details = { numRecipients };
-        onAdd({ type, details });
-    };
-
-    const handleAddCustom = () => {
-        const details = { customData };
-        onAdd({ type, details });
+    const handleAdd = (transaction: { type: string; details: Record<string, any> }) => {
+        if (type === "SEND ETH" || type === "SEND USDC" || type === "SEND IT") {
+            const parsedAmount = parseFloat(transaction.details.amount);
+            const amountWithDecimals = (parsedAmount * 10 ** decimals).toString();
+            const details = {
+                ...transaction.details,
+                amount: amountWithDecimals,
+                tokenAddress,
+                decimals,
+            };
+            onAdd({ type: transaction.type, details });
+        } else {
+            onAdd(transaction);
+        }
     };
 
     return (
@@ -58,36 +92,12 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ type, onAdd, onCancel
             <Text fontWeight="bold" fontSize="lg">
                 {type}
             </Text>
-
-            {type === "SEND ETH" || type === "SEND USDC" || type === "SEND IT" ? (
-                <SendERC20Transaction
-                    type={type}
-                    tokenAddress={tokenAddress}
-                    decimals={decimals}
-                    onAdd={onAdd}
-                    onCancel={onCancel}
-                />
-            ) : type === "SEND GNAR" ? (
-                <SendGnarTransaction
-                    onAdd={onAdd}
-                    onCancel={onCancel}
-                />
-            ) : type === "AIRDROP RANDOM GNAR" ? (
-                <AirdropRandomGnarTransaction
-                    onAdd={onAdd}
-                    onCancel={onCancel}
-                />
-            ) : type === "DROP PROPOSAL MINT" ? (
-                <ProposalTransactionInputs
-                    onAdd={(details: Record<string, any>) => onAdd({ type, details })}
-                    onCancel={onCancel}
-                />
-            ) : type === "CUSTOM TRANSACTION" ? (
-                <CustomTransaction
-                    onAdd={onAdd}
-                    onCancel={onCancel}
-                />
-            ) : null}
+            <TransactionForm
+                type={type}
+                fields={fields}
+                onAdd={handleAdd}
+                onCancel={onCancel}
+            />
         </VStack>
     );
 };

@@ -1,5 +1,5 @@
-import React from "react";
-import { VStack, Input, Button, HStack, Stack } from "@chakra-ui/react";
+import React, { useState } from "react";
+import { VStack, Input, Button, HStack, Stack, Text } from "@chakra-ui/react";
 import { Field } from "@/components/ui/field"; // Assuming this exists
 import { useForm } from "react-hook-form";
 import { isAddress } from "viem";
@@ -7,13 +7,13 @@ import { isAddress } from "viem";
 type SendERC20TransactionProps = {
     type: string;
     tokenAddress: string;
-    decimals: number;
+    decimals: number; // Token's decimal precision
     onAdd: (transaction: { type: string; details: Record<string, any> }) => void;
     onCancel: () => void;
 };
 
 interface FormValues {
-    amount: string;
+    amount: string; // Input as string to avoid float precision issues
     address: string;
 }
 
@@ -28,11 +28,32 @@ const SendERC20Transaction: React.FC<SendERC20TransactionProps> = ({
         register,
         handleSubmit,
         formState: { errors },
+        watch,
     } = useForm<FormValues>();
+    const [amountPreview, setAmountPreview] = useState<string>("0");
+
+    // Watch for amount input changes
+    const amount = watch("amount", "");
+
+    // Convert and update the preview in smaller units
+    React.useEffect(() => {
+        if (amount) {
+            const parsedAmount = parseFloat(amount);
+            if (!isNaN(parsedAmount)) {
+                setAmountPreview((parsedAmount * 10 ** decimals).toLocaleString("en-US"));
+            } else {
+                setAmountPreview("0");
+            }
+        } else {
+            setAmountPreview("0");
+        }
+    }, [amount, decimals]);
 
     const onSubmit = (data: FormValues) => {
+        const parsedAmount = parseFloat(data.amount);
+        const amountWithDecimals = (parsedAmount * 10 ** decimals).toString();
         const details = {
-            amount: data.amount,
+            amount: amountWithDecimals,
             address: data.address,
             tokenAddress,
             decimals,
@@ -56,6 +77,10 @@ const SendERC20Transaction: React.FC<SendERC20TransactionProps> = ({
                         })}
                         type="number"
                     />
+                    {/* Preview of the smaller units */}
+                    <Text fontSize="sm" color="gray.500" mt="1">
+                        {amountPreview} (uint)
+                    </Text>
                 </Field>
 
                 {/* Address Field */}

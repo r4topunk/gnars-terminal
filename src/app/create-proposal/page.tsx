@@ -142,9 +142,6 @@ const CreateProposalPage = () => {
                                 />
                             )}
                         />
-
-
-
                     </VStack>
                 </StepsContent>
 
@@ -156,6 +153,7 @@ const CreateProposalPage = () => {
                         <Text>
                             Transactions:{" "}
                             <strong>{transactions.map((tx) => tx.type).join(", ")}</strong>
+                            <TransactionList transactions={transactions} onDelete={handleDeleteTransaction} />
                         </Text>
                         <Text>Editor Content: <strong>{editorContent}</strong></Text>
                         <Markdown
