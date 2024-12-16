@@ -26,9 +26,10 @@ import TransactionItem from "@/components/create-proposal/TransactionItem";
 import Editor from "@/components/create-proposal/Editor";
 import Markdown from "@/components/proposal/markdown";
 import { USDC_CONTRACT_ADDRESS } from "@/utils/constants";
-import { encodeFunctionData } from "viem";
+import { Address, encodeFunctionData } from "viem";
 import USDC_ABI from "@/components/proposal/transactions/utils/USDC_abi";
-import { governorAddress, useWriteGovernorPropose } from "@/hooks/wagmiGenerated";
+import { governorAddress, tokenAbi, useWriteGovernorPropose } from "@/hooks/wagmiGenerated";
+import { useReadGovernorTreasury } from "@/hooks/wagmiGenerated";
 interface Transaction {
     type: string;
     details: any;
@@ -48,7 +49,7 @@ const CreateProposalPage = () => {
     const { writeContractAsync: writeProposal } = useWriteGovernorPropose();
     const proposalTitle = watch("proposalTitle");
     const editorContent = watch("editorContent");
-
+    const ReadGovernorTreasure = useReadGovernorTreasury();
     const handleAddTransaction = useCallback(() => {
         setShowTransactionOptions(true);
     }, []);
@@ -98,7 +99,37 @@ const CreateProposalPage = () => {
                     value: transaction.details.amount, // ETH amount
                     calldata: "0x", // No calldata for ETH
                 };
-            } else if (transaction.type === "SEND USDC") {
+            }
+            else if (transaction.type === "SEND NFT") {
+
+                const recipient = transaction.details.address;
+                const tokenId = transaction.details.tokenID;
+                console.log("Transaction: ", transaction);
+                console.log("Transaction details:", transaction.details);
+                console.log("Recipient:", recipient);
+                console.log("Token ID:", tokenId);
+                const encodedCalldata = encodeFunctionData({
+                    abi: tokenAbi,
+                    functionName: "transferFrom",
+                    args: [
+                        //from
+                        ReadGovernorTreasure.data as Address,
+                        //to
+                        recipient as Address,
+                        //tokenId
+                        tokenId,
+                    ],
+
+                });
+                console.log("Encoded calldata:", encodedCalldata);
+                return {
+                    target: ReadGovernorTreasure.data as Address, // NFT contract
+                    value: "0", // No ETH value for token transfers
+                    calldata: encodedCalldata, // Encoded calldata
+                };
+
+            }
+            else if (transaction.type === "SEND USDC") {
                 const usdcAddress = USDC_CONTRACT_ADDRESS
                 const encodedCalldata = encodeUSDCTransfer(
                     transaction.details.address,
@@ -111,6 +142,7 @@ const CreateProposalPage = () => {
                     value: "0", // No ETH value for token transfers
                     calldata: encodedCalldata, // Encoded calldata
                 };
+
             } else {
                 // Handle other transaction types here
                 return { target: "", value: "", calldata: "" };

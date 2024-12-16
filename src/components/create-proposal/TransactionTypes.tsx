@@ -8,7 +8,7 @@ type TransactionTypesProps = {
 const transactionOptions = [
     { name: "SEND ETH", image: "/images/ethereum-eth-logo.png" },
     { name: "SEND USDC", image: "/images/usd-coin-usdc-logo.png" },
-    { name: "SEND GNAR", image: "https://gnars.com/images/logo.png" },
+    { name: "SEND NFT", image: "https://gnars.com/images/logo.png" },
     { name: "AIRDROP RANDOM GNAR", image: "/images/loading.gif" },
     { name: "DROPOSAL MINT", image: "/images/Zorb.png" },
     { name: "SEND IT", image: "/images/sendit.jpg" },

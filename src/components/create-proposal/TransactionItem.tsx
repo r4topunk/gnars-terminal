@@ -38,7 +38,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ type, onAdd, onCancel
                     { name: "amount", placeholder: "Enter amount" },
                     { name: "address", placeholder: "Enter destination address", validate: (value: string) => isAddress(value) || "Invalid Ethereum address." }
                 ];
-            case "SEND GNAR":
+            case "SEND NFT":
                 return [
                     { name: "tokenID", placeholder: "Enter token ID" },
                     { name: "address", placeholder: "Enter destination address", validate: (value: string) => isAddress(value) || "Invalid Ethereum address." }
