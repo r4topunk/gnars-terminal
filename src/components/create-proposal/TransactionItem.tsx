@@ -7,6 +7,7 @@ import TransactionForm from "./TransactionForm";
 import { USDC_CONTRACT_ADDRESS } from "@/utils/constants";
 import { isAddress } from 'viem';
 import { LuChevronDown } from "react-icons/lu";
+import GnarReserveInfo from "./GnarReserveInfo";
 
 type TransactionItemProps = {
     type: string;
@@ -181,6 +182,9 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ type, onAdd, onCancel
                         <Radio value="Open">Open Edition</Radio>
                     </SimpleGrid>
                 </RadioGroup>
+            )}
+            {type === "SEND NFT" && (
+                <GnarReserveInfo />
             )}
 
             <TransactionForm

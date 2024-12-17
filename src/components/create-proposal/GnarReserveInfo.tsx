@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import { VStack, Text, Spinner, Box, Button } from "@chakra-ui/react";
+import React, { useMemo, useEffect } from "react";
+import { VStack, Text, Spinner, Box } from "@chakra-ui/react";
 import { useReadTokenRemainingTokensInReserve } from "@/hooks/wagmiGenerated";
 
 const GnarReserveInfo: React.FC = () => {
@@ -7,10 +7,17 @@ const GnarReserveInfo: React.FC = () => {
         data: reserve,
         isLoading,
         isError,
-        isStale,
         refetch,
         dataUpdatedAt,
     } = useReadTokenRemainingTokensInReserve();
+
+    // Periodically refetch the data every 60 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            refetch();
+        }, 60000);
+        return () => clearInterval(interval);
+    }, [refetch]);
 
     // Memoize reserve display to avoid unnecessary re-renders
     const reserveInfo = useMemo(() => {
@@ -46,14 +53,6 @@ const GnarReserveInfo: React.FC = () => {
     return (
         <VStack>
             {reserveInfo}
-            {isStale && (
-                <Text fontSize="sm" color="yellow.500">
-                    Data may be outdated. Click below to refresh.
-                </Text>
-            )}
-            <Button size="sm" colorScheme="teal" onClick={() => refetch()}>
-                Refresh Reserve Info
-            </Button>
         </VStack>
     );
 };
