@@ -10,6 +10,7 @@ import { Tooltip } from '@/components/ui/tooltip';
 import { FormattedAddress } from '@/components/utils/ethereum';
 import {
   Box,
+  Container,
   Heading,
   HStack,
   IconButton,
@@ -62,186 +63,188 @@ export default function ProposalPageClient({
   };
 
   return (
-    <VStack gap={4} align={'start'} w='full'>
-      {/* Proposal Details */}
-      <Box
-        shadow='sm'
-        w='full'
-        padding={4}
-        rounded='md'
-        display='flex'
-        flexDirection='column'
-        gap={2}
-        _dark={{ borderColor: 'yellow', borderWidth: 1 }}
-      >
-        <Stack
-          direction={{ base: 'column', md: 'row' }}
-          justify='space-between'
+    <Container maxW="container.lg" px={{ base: "0", md: "20%" }}>
+      <VStack gap={4} align={'start'} w='full'>
+        {/* Proposal Details */}
+        <Box
+          shadow='sm'
           w='full'
-          data-state='open'
-          _open={{
-            animation: 'fade-in 300ms ease-out',
-          }}
+          padding={4}
+          rounded='md'
+          display='flex'
+          flexDirection='column'
+          gap={2}
+          _dark={{ borderColor: 'yellow', borderWidth: 1 }}
         >
-          <HStack>
-            {proposalNumber > 1 && (
-              <Tooltip content='Previous Proposal'>
-                <Link href={`/dao/proposal/${proposalNumber - 1}`}>
-                  <IconButton size={'xs'} variant={'ghost'}>
-                    <LuArrowLeft />
-                  </IconButton>
-                </Link>
-              </Tooltip>
-            )}
-            <Heading size='md' as='h2'>
-              Proposal {proposalNumber}
-            </Heading>
-            {proposalNumber < latestProposalNumber && (
-              <Tooltip content='Next Proposal'>
-                <Link href={`/dao/proposal/${proposalNumber + 1}`}>
-                  <IconButton size={'xs'} variant={'ghost'}>
-                    <LuArrowRight />
-                  </IconButton>
-                </Link>
-              </Tooltip>
-            )}
+          <Stack
+            direction={{ base: 'column', md: 'row' }}
+            justify='space-between'
+            w='full'
+            data-state='open'
+            _open={{
+              animation: 'fade-in 300ms ease-out',
+            }}
+          >
+            <HStack>
+              {proposalNumber > 1 && (
+                <Tooltip content='Previous Proposal'>
+                  <Link href={`/dao/proposal/${proposalNumber - 1}`}>
+                    <IconButton size={'xs'} variant={'ghost'}>
+                      <LuArrowLeft />
+                    </IconButton>
+                  </Link>
+                </Tooltip>
+              )}
+              <Heading size='md' as='h2'>
+                Proposal {proposalNumber}
+              </Heading>
+              {proposalNumber < latestProposalNumber && (
+                <Tooltip content='Next Proposal'>
+                  <Link href={`/dao/proposal/${proposalNumber + 1}`}>
+                    <IconButton size={'xs'} variant={'ghost'}>
+                      <LuArrowRight />
+                    </IconButton>
+                  </Link>
+                </Tooltip>
+              )}
+            </HStack>
+
+            <HStack>
+              <ProposalStatus proposal={proposal} />
+              <FormattedAddress address={proposal.proposer} />
+            </HStack>
+          </Stack>
+
+          <Heading
+            size={{ base: '2xl', md: '4xl' }}
+            as='h1'
+            data-state='open'
+            _open={{
+              animation: 'fade-in 400ms ease-out',
+            }}
+          >
+            {proposal.title || 'No Title Available'}
+          </Heading>
+
+          <HStack
+            data-state='open'
+            _open={{
+              animation: 'fade-in 500ms ease-out',
+            }}
+          >
+            <Box
+              borderWidth={1}
+              borderRadius='md'
+              px={4}
+              py={2}
+              w='full'
+              bg='bg.subtle'
+            >
+              <Heading size='md'>For</Heading>
+              <Text
+                fontWeight='bold'
+                color={proposal.forVotes > 0 ? 'green.500' : 'fg.subtle'}
+              >
+                {proposal.forVotes}
+              </Text>
+            </Box>
+            <Box
+              borderWidth={1}
+              borderRadius='md'
+              px={4}
+              py={2}
+              w='full'
+              bg='bg.subtle'
+            >
+              <Heading size='md'>Against</Heading>
+              <Text
+                fontWeight='bold'
+                color={proposal.againstVotes > 0 ? 'red.500' : 'fg.subtle'}
+              >
+                {proposal.againstVotes}
+              </Text>
+            </Box>
+            <Box
+              key={proposal.proposalId}
+              borderWidth={1}
+              borderRadius='md'
+              px={4}
+              py={2}
+              w='full'
+              bg='bg.subtle'
+            >
+              <Heading size='md'>Abstain</Heading>
+              <Text
+                fontWeight='bold'
+                color={proposal.abstainVotes > 0 ? 'yellow.500' : 'fg.subtle'}
+              >
+                {proposal.abstainVotes}
+              </Text>
+            </Box>
           </HStack>
 
-          <HStack>
-            <ProposalStatus proposal={proposal} />
-            <FormattedAddress address={proposal.proposer} />
-          </HStack>
-        </Stack>
+          <CastVote proposal={proposal} />
+        </Box>
 
-        <Heading
-          size={{ base: '2xl', md: '4xl' }}
-          as='h1'
-          data-state='open'
-          _open={{
-            animation: 'fade-in 400ms ease-out',
-          }}
+        {/* Tabs */}
+        <Box
+          shadow={'sm'}
+          w={'full'}
+          padding={4}
+          pt={2}
+          rounded={'md'}
+          _dark={{ borderColor: 'yellow', borderWidth: 1 }}
         >
-          {proposal.title || 'No Title Available'}
-        </Heading>
-
-        <HStack
-          data-state='open'
-          _open={{
-            animation: 'fade-in 500ms ease-out',
-          }}
-        >
-          <Box
-            borderWidth={1}
-            borderRadius='md'
-            px={4}
-            py={2}
+          <Tabs.Root
+            value={tabMap[activeTab]}
+            onValueChange={handleTabChange}
             w='full'
-            bg='bg.subtle'
+            gap={0}
+            fitted
+            lazyMount
           >
-            <Heading size='md'>For</Heading>
-            <Text
-              fontWeight='bold'
-              color={proposal.forVotes > 0 ? 'green.500' : 'fg.subtle'}
-            >
-              {proposal.forVotes}
-            </Text>
-          </Box>
-          <Box
-            borderWidth={1}
-            borderRadius='md'
-            px={4}
-            py={2}
-            w='full'
-            bg='bg.subtle'
-          >
-            <Heading size='md'>Against</Heading>
-            <Text
-              fontWeight='bold'
-              color={proposal.againstVotes > 0 ? 'red.500' : 'fg.subtle'}
-            >
-              {proposal.againstVotes}
-            </Text>
-          </Box>
-          <Box
-            key={proposal.proposalId}
-            borderWidth={1}
-            borderRadius='md'
-            px={4}
-            py={2}
-            w='full'
-            bg='bg.subtle'
-          >
-            <Heading size='md'>Abstain</Heading>
-            <Text
-              fontWeight='bold'
-              color={proposal.abstainVotes > 0 ? 'yellow.500' : 'fg.subtle'}
-            >
-              {proposal.abstainVotes}
-            </Text>
-          </Box>
-        </HStack>
-
-        <CastVote proposal={proposal} />
-      </Box>
-
-      {/* Tabs */}
-      <Box
-        shadow={'sm'}
-        w={'full'}
-        padding={4}
-        pt={2}
-        rounded={'md'}
-        _dark={{ borderColor: 'yellow', borderWidth: 1 }}
-      >
-        <Tabs.Root
-          value={tabMap[activeTab]}
-          onValueChange={handleTabChange}
-          w='full'
-          gap={0}
-          fitted
-          lazyMount
-        >
-          <Tabs.List>
-            <Tabs.Trigger
-              value='description'
-              display='flex'
-              alignItems='center'
-              border={0}
-            >
-              <LuScroll />
-              <Text>Description</Text>
-            </Tabs.Trigger>
-            <Tabs.Trigger value='votes' display='flex' alignItems='center'>
-              <LuVote />
-              <Text>Votes</Text>
-            </Tabs.Trigger>
-            <Tabs.Trigger
-              value='transactions'
-              display='flex'
-              alignItems='center'
-            >
-              <FaEthereum />
-              <Text>Transactions</Text>
-            </Tabs.Trigger>
-            <Tabs.Trigger value='propdates' display='flex' alignItems='center'>
-              <LuArchive />
-              <Text>Propdates</Text>
-            </Tabs.Trigger>
-          </Tabs.List>
-          <Tabs.Content value='description' pt={2}>
-            <ProposalDescriptionContent proposal={proposal} />
-          </Tabs.Content>
-          <Tabs.Content value='votes' pt={2}>
-            <ProposalVotesContent proposal={proposal} />
-          </Tabs.Content>
-          <Tabs.Content value='transactions' pt={2}>
-            <ProposalTransactionsContent proposal={proposal} />
-          </Tabs.Content>
-          <Tabs.Content value='propdates' pt={2}>
-            <Text>Soon...</Text>
-          </Tabs.Content>
-        </Tabs.Root>
-      </Box>
-    </VStack>
+            <Tabs.List>
+              <Tabs.Trigger
+                value='description'
+                display='flex'
+                alignItems='center'
+                border={0}
+              >
+                <LuScroll />
+                <Text>Description</Text>
+              </Tabs.Trigger>
+              <Tabs.Trigger value='votes' display='flex' alignItems='center'>
+                <LuVote />
+                <Text>Votes</Text>
+              </Tabs.Trigger>
+              <Tabs.Trigger
+                value='transactions'
+                display='flex'
+                alignItems='center'
+              >
+                <FaEthereum />
+                <Text>Transactions</Text>
+              </Tabs.Trigger>
+              <Tabs.Trigger value='propdates' display='flex' alignItems='center'>
+                <LuArchive />
+                <Text>Propdates</Text>
+              </Tabs.Trigger>
+            </Tabs.List>
+            <Tabs.Content value='description' pt={2}>
+              <ProposalDescriptionContent proposal={proposal} />
+            </Tabs.Content>
+            <Tabs.Content value='votes' pt={2}>
+              <ProposalVotesContent proposal={proposal} />
+            </Tabs.Content>
+            <Tabs.Content value='transactions' pt={2}>
+              <ProposalTransactionsContent proposal={proposal} />
+            </Tabs.Content>
+            <Tabs.Content value='propdates' pt={2}>
+              <Text>Soon...</Text>
+            </Tabs.Content>
+          </Tabs.Root>
+        </Box>
+      </VStack>
+    </Container>
   );
 }

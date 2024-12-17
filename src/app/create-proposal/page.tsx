@@ -9,6 +9,7 @@ import {
     Button,
     Box,
     Group,
+    Container,
 } from "@chakra-ui/react";
 import {
     StepsRoot,
@@ -260,131 +261,131 @@ const CreateProposalPage = () => {
         alert("Proposal prepared! Check the console for details.");
     }, [transactions]);
 
-
-
     const isTitleValid = proposalTitle?.length > 5;
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <StepsRoot defaultValue={0} count={3}>
-                <StepsList>
-                    <StepsItem index={0} icon={<LuFileText />} />
-                    <StepsItem index={1} icon={<LuPlus />} />
-                    <StepsItem index={2} icon={<LuCheckCircle />} />
-                </StepsList>
+        <Container maxW="container.lg" px={{ base: "0", md: "20%" }}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <StepsRoot defaultValue={0} count={3}>
+                    <StepsList>
+                        <StepsItem index={0} icon={<LuFileText />} />
+                        <StepsItem index={1} icon={<LuPlus />} />
+                        <StepsItem index={2} icon={<LuCheckCircle />} />
+                    </StepsList>
 
-                {/* Step 1: Proposal Title */}
-                <StepsContent index={0}>
-                    <VStack gap={4} align="stretch" p={4}>
-                        <Text fontSize="2xl" fontWeight="bold">Proposal Title</Text>
-                        <Controller
-                            name="proposalTitle"
-                            control={control}
-                            defaultValue=""
-                            rules={{ required: "Title is required", minLength: { value: 6, message: "Title must be longer than 5 characters" } }}
-                            render={({ field, fieldState }) => (
+                    {/* Step 1: Proposal Title */}
+                    <StepsContent index={0}>
+                        <VStack gap={4} align="stretch" p={4}>
+                            <Text fontSize="2xl" fontWeight="bold">Proposal Title</Text>
+                            <Controller
+                                name="proposalTitle"
+                                control={control}
+                                defaultValue=""
+                                rules={{ required: "Title is required", minLength: { value: 6, message: "Title must be longer than 5 characters" } }}
+                                render={({ field, fieldState }) => (
+                                    <>
+                                        <Input
+                                            placeholder="Enter your proposal title"
+                                            {...field}
+                                        />
+                                        {fieldState.error && (
+                                            <Text color="red.500">{fieldState.error.message}</Text>
+                                        )}
+                                    </>
+                                )}
+                            />
+                        </VStack>
+                    </StepsContent>
+
+                    {/* Step 2: Add Transactions */}
+                    <StepsContent index={1}>
+                        <VStack gap={4} align="stretch" p={4}>
+                            <Text fontSize="2xl" fontWeight="bold">Transactions</Text>
+
+                            {currentTransactionType ? (
+                                <TransactionItem
+                                    type={currentTransactionType}
+                                    onAdd={handleAddTransactionDetails}
+                                    onCancel={handleCancelTransaction}
+                                />
+                            ) : showTransactionOptions ? (
+                                <TransactionTypes onSelect={handleSelectTransaction} />
+                            ) : (
                                 <>
-                                    <Input
-                                        placeholder="Enter your proposal title"
-                                        {...field}
-                                    />
-                                    {fieldState.error && (
-                                        <Text color="red.500">{fieldState.error.message}</Text>
-                                    )}
+                                    <TransactionList transactions={transactions} onDelete={handleDeleteTransaction} />
+                                    <Button colorScheme="teal" onClick={handleAddTransaction}>
+                                        Add Transaction
+                                    </Button>
                                 </>
                             )}
-                        />
-                    </VStack>
-                </StepsContent>
+                        </VStack>
+                    </StepsContent>
 
-                {/* Step 2: Add Transactions */}
-                <StepsContent index={1}>
-                    <VStack gap={4} align="stretch" p={4}>
-                        <Text fontSize="2xl" fontWeight="bold">Transactions</Text>
-
-                        {currentTransactionType ? (
-                            <TransactionItem
-                                type={currentTransactionType}
-                                onAdd={handleAddTransactionDetails}
-                                onCancel={handleCancelTransaction}
+                    {/* Step 3: Proposal Description */}
+                    <StepsContent index={2}>
+                        <VStack gap={4} align="stretch" p={4}>
+                            <Text fontSize="2xl" fontWeight="bold">Proposal Description</Text>
+                            <Controller
+                                name="editorContent"
+                                control={control}
+                                defaultValue=""
+                                render={({ field }) => (
+                                    <Editor
+                                        value={field.value} // Pass the form value to the editor
+                                        onChange={(content) => {
+                                            field.onChange(content); // Update react-hook-form state
+                                        }}
+                                    />
+                                )}
                             />
-                        ) : showTransactionOptions ? (
-                            <TransactionTypes onSelect={handleSelectTransaction} />
-                        ) : (
-                            <>
-                                <TransactionList transactions={transactions} onDelete={handleDeleteTransaction} />
-                                <Button colorScheme="teal" onClick={handleAddTransaction}>
-                                    Add Transaction
-                                </Button>
-                            </>
-                        )}
-                    </VStack>
-                </StepsContent>
+                        </VStack>
+                    </StepsContent>
 
-                {/* Step 3: Proposal Description */}
-                <StepsContent index={2}>
-                    <VStack gap={4} align="stretch" p={4}>
-                        <Text fontSize="2xl" fontWeight="bold">Proposal Description</Text>
-                        <Controller
-                            name="editorContent"
-                            control={control}
-                            defaultValue=""
-                            render={({ field }) => (
-                                <Editor
-                                    value={field.value} // Pass the form value to the editor
-                                    onChange={(content) => {
-                                        field.onChange(content); // Update react-hook-form state
-                                    }}
+                    {/* Review and Submit */}
+                    <StepsCompletedContent>
+                        <VStack gap={4} align="stretch" p={4}>
+                            <Text fontSize="2xl" fontWeight="bold">Review and Submit</Text>
+                            <Text>Title: <strong>{proposalTitle}</strong></Text>
+                            <TransactionList transactions={transactions} onDelete={handleDeleteTransaction} />
+                            <Box
+                                borderWidth="1px"
+                                borderRadius="md"
+                                borderColor={editorContent ? "gray.300" : "red.500"}
+                                p={4}
+                            >
+                                <Markdown
+                                    text={editorContent}
                                 />
-                            )}
-                        />
-                    </VStack>
-                </StepsContent>
+                            </Box>
+                            <Button
+                                colorScheme="green"
+                                type="submit"
+                                disabled={!isTitleValid || transactions.length === 0}
+                            >
+                                Submit Proposal
+                            </Button>
+                        </VStack>
+                    </StepsCompletedContent>
 
-                {/* Review and Submit */}
-                <StepsCompletedContent>
-                    <VStack gap={4} align="stretch" p={4}>
-                        <Text fontSize="2xl" fontWeight="bold">Review and Submit</Text>
-                        <Text>Title: <strong>{proposalTitle}</strong></Text>
-                        <TransactionList transactions={transactions} onDelete={handleDeleteTransaction} />
-                        <Box
-                            borderWidth="1px"
-                            borderRadius="md"
-                            borderColor={editorContent ? "gray.300" : "red.500"}
-                            p={4}
-                        >
-                            <Markdown
-                                text={editorContent}
-                            />
-                        </Box>
-                        <Button
-                            colorScheme="green"
-                            type="submit"
-                            disabled={!isTitleValid || transactions.length === 0}
-                        >
-                            Submit Proposal
-                        </Button>
-                    </VStack>
-                </StepsCompletedContent>
-
-                {/* Navigation Buttons */}
-                <Group mt={6} justify="space-between">
-                    <StepsPrevTrigger asChild>
-                        <Button variant="outline" size="sm">Previous</Button>
-                    </StepsPrevTrigger>
-                    <StepsNextTrigger asChild>
-                        <Button
-                            variant="solid"
-                            size="sm"
-                            colorScheme="teal"
-                            disabled={!isTitleValid && !transactions.length}
-                        >
-                            Next
-                        </Button>
-                    </StepsNextTrigger>
-                </Group>
-            </StepsRoot>
-        </form>
+                    {/* Navigation Buttons */}
+                    <Group mt={6} justify="space-between">
+                        <StepsPrevTrigger asChild>
+                            <Button variant="outline" size="sm">Previous</Button>
+                        </StepsPrevTrigger>
+                        <StepsNextTrigger asChild>
+                            <Button
+                                variant="solid"
+                                size="sm"
+                                colorScheme="teal"
+                                disabled={!isTitleValid && !transactions.length}
+                            >
+                                Next
+                            </Button>
+                        </StepsNextTrigger>
+                    </Group>
+                </StepsRoot>
+            </form>
+        </Container>
     );
 };
 
