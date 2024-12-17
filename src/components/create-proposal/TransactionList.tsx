@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { VStack, Box, Text, Button, HStack } from "@chakra-ui/react";
-import { FormattedAddress } from "../utils/ethereum";
 import { LuChevronDown, LuChevronUp } from "react-icons/lu";
 
 type TransactionDetails = Record<string, string | number | React.ReactNode>;
@@ -16,7 +15,6 @@ const TransactionList: React.FC<TransactionListProps> = ({ transactions, onDelet
     const toggleExpand = (index: number) => {
         setExpandedIndex(expandedIndex === index ? null : index);
     };
-
 
     return (
         <VStack gap={4} align="stretch" p={4}>
