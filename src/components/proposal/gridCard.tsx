@@ -33,7 +33,6 @@ const ProposalGridCard = memo(({ proposal }: ProposalGridCardProps) => {
       h={'full'}
     >
       <VStack gap={1} align={'start'} flex={1}>
-
         <Image mb={2} asChild w={'full'} rounded={'md'} aspectRatio={16 / 9}>
           <NextImage
             width={512}

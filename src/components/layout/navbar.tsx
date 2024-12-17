@@ -70,6 +70,7 @@ export default function Navbar() {
             pt={2}
             gap={2}
             zIndex={10}
+            colorPalette={'black'}
           >
             <NextLink href='/' style={{ width: '100%' }}>
               <Link
@@ -115,9 +116,6 @@ export default function Navbar() {
                 <IoDocumentTextOutline />
                 About
               </Link>
-              {/* <Text pb={1} _hover={{ textDecoration: 'underline' }} w='full'>
-                About
-              </Text> */}
             </NextLink>
           </VStack>
         )}

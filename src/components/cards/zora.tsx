@@ -13,7 +13,7 @@ async function ZoraCard(props: ZoraCardProps) {
       display={'flex'}
       flexDirection={'column'}
       gap={2}
-      height={'300px'}
+      height={{ base: '300px', md: 'full' }}
     >
       <ZoraEmbed
         chainContract={'base:0x3ac50ed10080d12fbb3fb1fc53524fa38ff67659/2'}

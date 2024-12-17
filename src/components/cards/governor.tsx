@@ -1,12 +1,36 @@
 import { fetchProposals, Proposal } from '@/app/services/proposal';
 import { DAO_ADDRESSES } from '@/utils/constants';
-import { Box, Button, Grid, GridItem, Heading, HStack, Link, Stack, Tabs } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Grid,
+  GridItem,
+  Heading,
+  HStack,
+  Link,
+  Stack,
+  Tabs,
+  VStack,
+} from '@chakra-ui/react';
 import ProposalListCard from '../proposal/listCard';
 import { LuLayoutGrid, LuList, LuPencilLine } from 'react-icons/lu';
 import ProposalGridCard from '../proposal/gridCard';
 import CreateProposalButton from '../ui/create-proposal-button';
+import { getProposalStatus, Status } from '../proposal/status';
 
-async function GovernorCard() {
+interface GovernorCardProps {
+  limit?: number;
+  tabDefault?: 'grid' | 'list';
+  gridColumns?: number;
+  filterBy?: Status[];
+}
+
+async function GovernorCard({
+  tabDefault = 'list',
+  gridColumns = 2,
+  filterBy,
+  limit,
+}: GovernorCardProps) {
   const proposals = await fetchProposals(
     DAO_ADDRESSES.token,
     'proposalNumber',
@@ -16,6 +40,17 @@ async function GovernorCard() {
     false,
     true
   );
+
+  const filteredProposals = filterBy
+    ? proposals.filter((proposal) => {
+        const status = getProposalStatus(proposal);
+        return filterBy.includes(status);
+      })
+    : proposals;
+
+  const limitedProposals = limit
+    ? filteredProposals.slice(0, limit)
+    : filteredProposals;
 
   return (
     <Box
@@ -28,27 +63,31 @@ async function GovernorCard() {
       flexDirection={'column'}
       gap={2}
     >
-      <Tabs.Root defaultValue='list' variant={'subtle'} size={'sm'}>
+      <Tabs.Root defaultValue={tabDefault} variant={'subtle'} size={'sm'}>
         <HStack justify={'space-between'}>
           <Stack direction='row' gap={4}>
             <Link href='/dao'>
               <Heading as='h2'>Proposals</Heading>
             </Link>
-
-            <CreateProposalButton />
           </Stack>
-          <Tabs.List>
-            <Tabs.Trigger value='grid'>
-              <LuLayoutGrid />
-            </Tabs.Trigger>
-            <Tabs.Trigger value='list'>
-              <LuList />
-            </Tabs.Trigger>
-          </Tabs.List>
+          <HStack>
+            <Tabs.List>
+              <Tabs.Trigger value='grid'>
+                <LuLayoutGrid />
+              </Tabs.Trigger>
+              <Tabs.Trigger value='list'>
+                <LuList />
+              </Tabs.Trigger>
+            </Tabs.List>
+            <CreateProposalButton />
+          </HStack>
         </HStack>
         <Tabs.Content value='grid'>
-          <Grid templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }} gap={2}>
-            {proposals.map((proposal: Proposal) => (
+          <Grid
+            templateColumns={{ base: '1fr', md: `repeat(${gridColumns}, 1fr)` }}
+            gap={2}
+          >
+            {limitedProposals.map((proposal: Proposal) => (
               <GridItem key={proposal.proposalId}>
                 <ProposalGridCard proposal={proposal} />
               </GridItem>
@@ -56,7 +95,7 @@ async function GovernorCard() {
           </Grid>
         </Tabs.Content>
         <Tabs.Content value='list'>
-          {proposals.map((proposal: Proposal) => (
+          {limitedProposals.map((proposal: Proposal) => (
             <ProposalListCard key={proposal.proposalId} proposal={proposal} />
           ))}
         </Tabs.Content>
