@@ -33,7 +33,7 @@ export const viewport = {
   themeColor: '#FFD700', // Replace with your desired color
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout(props: { children: ReactNode }) {
   const initialState = cookieToInitialState(
     getConfig(),
     headers().get('cookie') // Fetch cookie headers dynamically
