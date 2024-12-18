@@ -1,11 +1,7 @@
 import React from "react";
 import { SimpleGrid, Box, Text, Button, Image, VStack } from "@chakra-ui/react";
 
-type TransactionTypesProps = {
-    onSelect: (transactionType: string) => void;
-};
-
-const transactionOptions = [
+export const transactionOptions = [
     { name: "SEND ETH", image: "/images/ethereum-eth-logo.png" },
     { name: "SEND USDC", image: "/images/usd-coin-usdc-logo.png" },
     { name: "SEND NFT", image: "https://gnars.com/images/logo.png" },
@@ -14,6 +10,10 @@ const transactionOptions = [
     { name: "SEND IT", image: "/images/sendit.jpg" },
     { name: "CUSTOM TRANSACTION", image: "/images/brainhead.png" },
 ];
+
+type TransactionTypesProps = {
+    onSelect: (transactionType: string) => void;
+};
 
 const TransactionTypes: React.FC<TransactionTypesProps> = ({ onSelect }) => {
     return (
