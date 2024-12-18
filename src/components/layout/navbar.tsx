@@ -2,34 +2,27 @@
 
 import { ColorModeButton } from '@/components/ui/color-mode';
 import {
-  Heading,
   HStack,
   IconButton,
   Image,
-  Stack,
-  Text,
-  Box,
-  VStack,
-  useMediaQuery,
   Link,
+  Stack,
+  useMediaQuery,
 } from '@chakra-ui/react';
+import NextImage from 'next/image';
 import NextLink from 'next/link';
 import { BsGithub } from 'react-icons/bs';
-import { useState } from 'react';
+import { IoDocumentTextOutline } from 'react-icons/io5';
+import { LuArchive, LuHome } from 'react-icons/lu';
+import { MdOutlineHowToVote } from 'react-icons/md';
+import AccountMenu from './account-menu';
 import ConnectButton from './connect-button';
 import Sparks from './sparks';
-import AccountMenu from './account-menu';
-import { Button } from '../ui/button';
-import { FcAbout } from 'react-icons/fc';
-import { LuHome } from 'react-icons/lu';
-import { MdOutlineHowToVote } from 'react-icons/md';
-import { IoDocumentTextOutline } from 'react-icons/io5';
 
 export default function Navbar() {
   const [isLargerThanMd] = useMediaQuery(['(min-width: 768px)'], {
     fallback: [true],
   });
-  const [showMenu, setShowMenu] = useState(false);
 
   return (
     <HStack
@@ -40,87 +33,24 @@ export default function Navbar() {
       colorPalette={'yellow'}
       position='relative'
     >
-      <Box
-        position='relative'
-        onMouseEnter={() => setShowMenu(true)}
-        onMouseLeave={() => setShowMenu(false)}
+      <Stack
+        direction='row'
+        align='center'
+        gap={3}
+        fontSize={'md'}
+        fontWeight={'medium'}
       >
-        <NextLink href={'/'}>
-          <Stack direction='row' align='center' gap={2}>
-            <Image
-              src='https://gnars.com/images/logo.png'
-              alt='gnars-terminal'
-              boxSize={6}
-            />
-            <Heading
-              size={{ base: 'xl', md: '2xl' }}
-              as='h1'
-              fontWeight={'bold'}
-            >
-              TermGnar
-            </Heading>
-          </Stack>
-        </NextLink>
-
-        {showMenu && (
-          <VStack
-            position='absolute'
-            top='100%'
-            left='0'
-            pt={2}
-            gap={2}
-            zIndex={10}
-            colorPalette={'black'}
-          >
-            <NextLink href='/' style={{ width: '100%' }}>
-              <Link
-                data-state='open'
-                _open={{
-                  animation: 'fade-in 300ms ease-out',
-                }}
-                fontSize={'xl'}
-                fontWeight={'medium'}
-              >
-                <LuHome />
-                Home
-              </Link>
-            </NextLink>
-            <NextLink href='/dao' style={{ width: '100%' }}>
-              <Link
-                fontSize={'xl'}
-                fontWeight={'medium'}
-                data-state='open'
-                _open={{
-                  animation: 'fade-in 600ms ease-out',
-                }}
-                _hidden={{
-                  animation: 'fade-out 600ms ease-in',
-                }}
-              >
-                <MdOutlineHowToVote />
-                DAO
-              </Link>
-            </NextLink>
-            <NextLink href='/about' style={{ width: '100%' }}>
-              <Link
-                fontSize={'xl'}
-                fontWeight={'medium'}
-                data-state='open'
-                _open={{
-                  animation: 'fade-in 900ms ease-out',
-                }}
-                _hidden={{
-                  animation: 'fade-out 300ms ease-in',
-                }}
-              >
-                <IoDocumentTextOutline />
-                About
-              </Link>
-            </NextLink>
-          </VStack>
-        )}
-      </Box>
-
+        <Image asChild boxSize={6} mr={2}>
+          <NextImage
+            src='https://gnars.com/images/logo.png'
+            alt='gnars-terminal'
+            width={80}
+            height={80}
+            objectFit='contain'
+          />
+        </Image>
+        <NavbarLinks isLargerThanMd={isLargerThanMd} />
+      </Stack>
       {isLargerThanMd ? (
         <HStack>
           <NextLink href='https://github.com/r4topunk/gnars-terminal'>
@@ -137,4 +67,72 @@ export default function Navbar() {
       )}
     </HStack>
   );
+}
+
+function NavbarLinks({ isLargerThanMd }: { isLargerThanMd: boolean }) {
+  return isLargerThanMd ? (
+    <>
+      <Link
+        data-state='open'
+        _open={{
+          animation: 'fade-in 300ms ease-out',
+        }}
+        asChild
+        gap={'0.5'}
+      >
+        <NextLink href='/' style={{ width: '100%' }}>
+          <LuHome />
+          HOME
+        </NextLink>
+      </Link>
+      <Link
+        data-state='open'
+        _open={{
+          animation: 'fade-in 600ms ease-out',
+        }}
+        _hidden={{
+          animation: 'fade-out 600ms ease-in',
+        }}
+        asChild
+        gap={'0.5'}
+      >
+        <NextLink href='/dao' style={{ width: '100%' }}>
+          <MdOutlineHowToVote />
+          DAO
+        </NextLink>
+      </Link>
+      <Link
+        data-state='open'
+        _open={{
+          animation: 'fade-in 900ms ease-out',
+        }}
+        _hidden={{
+          animation: 'fade-out 300ms ease-in',
+        }}
+        gap={'0.5'}
+        asChild
+      >
+        <NextLink href='/about' style={{ width: '100%' }}>
+          <IoDocumentTextOutline />
+          ABOUT
+        </NextLink>
+      </Link>
+      <Link
+        data-state='open'
+        _open={{
+          animation: 'fade-in 900ms ease-out',
+        }}
+        _hidden={{
+          animation: 'fade-out 300ms ease-in',
+        }}
+        gap={'0.5'}
+        asChild
+      >
+        <NextLink href='#' style={{ width: '100%' }}>
+          <LuArchive />
+          PROPDATES
+        </NextLink>
+      </Link>
+    </>
+  ) : null;
 }

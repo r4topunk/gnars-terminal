@@ -2,7 +2,6 @@ import { fetchProposals, Proposal } from '@/app/services/proposal';
 import { DAO_ADDRESSES } from '@/utils/constants';
 import {
   Box,
-  Button,
   Grid,
   GridItem,
   Heading,
@@ -10,13 +9,12 @@ import {
   Link,
   Stack,
   Tabs,
-  VStack,
 } from '@chakra-ui/react';
-import ProposalListCard from '../proposal/listCard';
-import { LuLayoutGrid, LuList, LuPencilLine } from 'react-icons/lu';
+import { LuLayoutGrid, LuList } from 'react-icons/lu';
 import ProposalGridCard from '../proposal/gridCard';
-import CreateProposalButton from '../ui/create-proposal-button';
+import ProposalListCard from '../proposal/listCard';
 import { getProposalStatus, Status } from '../proposal/status';
+import CreateProposalButton from '../ui/create-proposal-button';
 
 interface GovernorCardProps {
   limit?: number;
@@ -84,7 +82,11 @@ async function GovernorCard({
         </HStack>
         <Tabs.Content value='grid'>
           <Grid
-            templateColumns={{ base: '1fr', md: `repeat(${gridColumns}, 1fr)` }}
+            templateColumns={{
+              base: '1fr',
+              md: 'repeat(2, 1fr)',
+              lg: `repeat(${gridColumns}, 1fr)`,
+            }}
             gap={2}
           >
             {limitedProposals.map((proposal: Proposal) => (

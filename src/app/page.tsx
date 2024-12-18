@@ -16,8 +16,13 @@ async function App() {
   const activeAuction = auctions[0];
 
   return (
-    <VStack gap={8} align={'start'}>
-      <Grid templateColumns={{ base: '1fr', lg: 'repeat(2, 1fr)' }} gap={8}>
+    <VStack gap={4} align={'start'}>
+      <Grid
+        templateColumns={{ base: '1fr', lg: 'repeat(2, 1fr)' }}
+        templateRows={{ base: 'auto', md: 'repeat(2, 1fr)', lg: 'auto' }}
+        gap={4}
+        w={'full'}
+      >
         <GridItem>
           <ZoraCard />
         </GridItem>
