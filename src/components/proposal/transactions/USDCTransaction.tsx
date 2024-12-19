@@ -33,7 +33,7 @@ const USDCTransaction: React.FC<USDCTransactionProps> = ({
           <strong>Value:</strong> {value}
         </Text>
         <Image
-          src='/images/usd-coin-usdc-logo.png'
+          src='/images/usdc.png'
           alt='USDC Logo'
           boxSize='20px'
           objectFit='contain'

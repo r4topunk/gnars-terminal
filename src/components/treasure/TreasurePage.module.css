@@ -1,0 +1,155 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 20px;
+}
+
+/* Header Section */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+.address {
+    font-weight: bold;
+}
+
+.netWorth {
+    text-align: right;
+}
+
+/* Navigation Section */
+.navigation {
+    display: flex;
+    gap: 10px;
+}
+
+.navButton {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.navButton:hover {
+    background-color: #383838;
+}
+
+/* Wallet Section */
+.wallet {
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.walletHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.tokenList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tokenItem {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Activity Section */
+.activity {
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.activityItem {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #383838;
+}
+
+.activityItem:last-child {
+    border-bottom: none;
+}
+
+/* NFTs Section */
+.nfts {
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.nftGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+.nftCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+}
+
+.nftImage {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+/* Pagination Section */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.pagination button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.pagination button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.hideOnMobile {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .hideOnMobile {
+        display: table-cell;
+    }
+}

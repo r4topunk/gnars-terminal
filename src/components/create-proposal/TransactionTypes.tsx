@@ -2,8 +2,8 @@ import React from "react";
 import { SimpleGrid, Box, Text, Button, Image, VStack } from "@chakra-ui/react";
 
 export const transactionOptions = [
-    { name: "SEND ETH", image: "/images/ethereum-eth-logo.png" },
-    { name: "SEND USDC", image: "/images/usd-coin-usdc-logo.png" },
+    { name: "SEND ETH", image: "/images/ethereum.png" },
+    { name: "SEND USDC", image: "/images/usdc.png" },
     { name: "SEND NFT", image: "https://gnars.com/images/logo.png" },
     { name: "AIRDROP RANDOM GNAR", image: "/images/loading.gif" },
     { name: "DROPOSAL MINT", image: "/images/Zorb.png" },
