@@ -15,9 +15,7 @@ type TransactionTypesProps = {
     onSelect: (transactionType: string) => void;
 };
 
-type TransactionTypesProps = {
-    onSelect: (transactionType: string) => void;
-};
+
 
 const TransactionTypes: React.FC<TransactionTypesProps> = ({ onSelect }) => {
     return (
