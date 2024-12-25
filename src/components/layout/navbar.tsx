@@ -112,9 +112,9 @@ function NavbarLinks({ isLargerThanMd }: { isLargerThanMd: boolean }) {
         gap={'0.5'}
         asChild
       >
-        <NextLink href='/about' style={{ width: '100%' }}>
-          <IoDocumentTextOutline />
-          ABOUT
+        <NextLink href='/propdates' style={{ width: '100%' }}>
+          <LuArchive />
+          PROPDATES
         </NextLink>
       </Link>
       <Link
@@ -128,9 +128,9 @@ function NavbarLinks({ isLargerThanMd }: { isLargerThanMd: boolean }) {
         gap={'0.5'}
         asChild
       >
-        <NextLink href='#' style={{ width: '100%' }}>
-          <LuArchive />
-          PROPDATES
+        <NextLink href='/about' style={{ width: '100%' }}>
+          <IoDocumentTextOutline />
+          ABOUT
         </NextLink>
       </Link>
     </>

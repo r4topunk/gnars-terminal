@@ -6,6 +6,8 @@ import { fetchAuction } from '@/services/auction';
 import { DAO_ADDRESSES } from '@/utils/constants';
 import { Grid, GridItem, VStack } from '@chakra-ui/react';
 
+export const revalidate = 0;
+
 async function App() {
   const auctions = await fetchAuction(
     DAO_ADDRESSES.token,

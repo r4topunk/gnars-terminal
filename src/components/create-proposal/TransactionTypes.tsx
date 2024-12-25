@@ -15,6 +15,10 @@ type TransactionTypesProps = {
     onSelect: (transactionType: string) => void;
 };
 
+type TransactionTypesProps = {
+    onSelect: (transactionType: string) => void;
+};
+
 const TransactionTypes: React.FC<TransactionTypesProps> = ({ onSelect }) => {
     return (
         <SimpleGrid columns={{ base: 1, sm: 2 }} gap={6}>

@@ -40,12 +40,12 @@ export default function RootLayout(props: { children: ReactNode }) {
   );
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang='en' suppressHydrationWarning>
       <body className={inter.className} style={{ minHeight: '100vh' }}>
         <Providers initialState={initialState}>
           <Navbar />
           <Box
-            minH={'100vh'}
+            minH={'full'}
             bg={'bg.panel'}
             colorPalette={'yellow'}
             color={{ base: 'black', _dark: 'white' }}

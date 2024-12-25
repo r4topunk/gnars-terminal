@@ -1,6 +1,7 @@
 'use client';
 
 import { Proposal } from '@/app/services/proposal';
+import PropdatesContentCard from '@/components/propdates/contentCard';
 import CastVote from '@/components/proposal/castVote';
 import ProposalDescriptionContent from '@/components/proposal/ProposalDescriptionContent';
 import ProposalTransactionsContent from '@/components/proposal/ProposalTransactionsContent';
@@ -8,6 +9,7 @@ import ProposalVotesContent from '@/components/proposal/ProposalVotesContent';
 import ProposalStatus from '@/components/proposal/status';
 import { Tooltip } from '@/components/ui/tooltip';
 import { FormattedAddress } from '@/components/utils/ethereum';
+import { PropDateInterface } from '@/utils/database/interfaces';
 import {
   Box,
   Container,
@@ -35,12 +37,14 @@ interface ProposalPageClientProps {
   proposal: Proposal;
   proposalNumber: number;
   latestProposalNumber: number;
+  propdates: PropDateInterface[] | null;
 }
 
 export default function ProposalPageClient({
   proposal,
   proposalNumber,
   latestProposalNumber,
+  propdates = [],
 }: ProposalPageClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -63,7 +67,7 @@ export default function ProposalPageClient({
   };
 
   return (
-    <Container maxW="container.lg" px={{ base: "0", md: "20%" }}>
+    <Container maxW='container.lg' px={{ base: '0', md: '20%' }}>
       <VStack gap={4} align={'start'} w='full'>
         {/* Proposal Details */}
         <Box
@@ -225,7 +229,11 @@ export default function ProposalPageClient({
                 <FaEthereum />
                 <Text>Transactions</Text>
               </Tabs.Trigger>
-              <Tabs.Trigger value='propdates' display='flex' alignItems='center'>
+              <Tabs.Trigger
+                value='propdates'
+                display='flex'
+                alignItems='center'
+              >
                 <LuArchive />
                 <Text>Propdates</Text>
               </Tabs.Trigger>
@@ -240,7 +248,13 @@ export default function ProposalPageClient({
               <ProposalTransactionsContent proposal={proposal} />
             </Tabs.Content>
             <Tabs.Content value='propdates' pt={2}>
-              <Text>Soon...</Text>
+              {propdates?.length ? (
+                <PropdatesContentCard propdates={propdates} />
+              ) : (
+                <Text mt={2} textAlign={'center'} w={'full'}>
+                  No propdates yet
+                </Text>
+              )}
             </Tabs.Content>
           </Tabs.Root>
         </Box>
