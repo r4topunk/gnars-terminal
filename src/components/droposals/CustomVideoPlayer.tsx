@@ -2,14 +2,16 @@ import { useRef, useState, useEffect } from 'react';
 import { Box, Button, IconButton, HStack, Image, Text } from '@chakra-ui/react';
 import { FiVolume2, FiVolumeX, FiMaximize, FiMinimize } from 'react-icons/fi';
 import { LuPause, LuPlay } from 'react-icons/lu';
+import CollectModal from './CollectModal'; // Import the CollectModal component
 
-const CustomVideoPlayer = ({ src, isVideo, title, royalties }: { src: string; isVideo: boolean; title: string; royalties: string }) => {
+const CustomVideoPlayer = ({ src, isVideo, title, royalties, proposer, fundsRecipient, description, saleConfig }: { src: string; isVideo: boolean; title: string; royalties: string; proposer: string; fundsRecipient: string; description: string; saleConfig: any }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolume] = useState(1);
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [progress, setProgress] = useState(0);
     const [hoverTime, setHoverTime] = useState<number | null>(null);
+    const [isCollectModalOpen, setIsCollectModalOpen] = useState(false); // State to manage CollectModal visibility
 
     // Show/hide controls on hover
     const [isHovered, setIsHovered] = useState(false);
@@ -237,14 +239,27 @@ const CustomVideoPlayer = ({ src, isVideo, title, royalties }: { src: string; is
                         aria-label="Mint"
                         colorScheme="teal"
                         size="sm"
-                        onClick={() => alert('Mint button clicked')}
+                        onClick={() => setIsCollectModalOpen(true)} // Open the CollectModal
                     >
                         Collect
                     </Button>
                 </Box>
-            )
-            }
-        </Box >
+            )}
+
+            {/* CollectModal */}
+            <CollectModal
+                isOpen={isCollectModalOpen}
+                onClose={() => setIsCollectModalOpen(false)}
+                title={title}
+                royalties={royalties}
+                proposer={proposer}
+                fundsRecipient={fundsRecipient}
+                description={description}
+                saleConfig={saleConfig}
+                mediaSrc={src}
+                isVideo={isVideo}
+            />
+        </Box>
     );
 };
 

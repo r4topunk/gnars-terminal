@@ -158,6 +158,10 @@ export default function DroposalCard() {
                             isVideo={!!data.animationURI}
                             title={data.name}
                             royalties={data.royaltyBPS}
+                            proposer={lastProposal.proposer} // Pass proposer
+                            fundsRecipient={data.fundsRecipient} // Pass funds recipient
+                            description={data.description} // Pass description
+                            saleConfig={data.saleConfig} // Pass sale configuration
                         />
                     </Stack>
                 ))
@@ -170,7 +174,7 @@ export default function DroposalCard() {
                     gap={4}
                     _dark={{ borderColor: 'yellow', borderWidth: 1 }}
                 >
-                    <Skeleton height="200px" width="full" />
+                    <Skeleton height="full" width="full" />
                 </Box>
             )}
         </VStack>
