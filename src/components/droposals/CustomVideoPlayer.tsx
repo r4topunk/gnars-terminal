@@ -115,18 +115,18 @@ const CustomVideoPlayer = ({ src, isVideo, title, royalties, proposer, fundsReci
             onMouseLeave={() => setIsHovered(false)}
         >
             {/* Title and Royalties */}
-            <Box
+            {/* <Box
                 position="absolute"
                 top={4}
                 left={4}
                 zIndex={1}
-                color="white"
+                color="black"
                 textShadow="1px 1px 2px black"
                 display={isPlaying ? 'none' : 'block'}
             >
                 <Text fontSize="xl" fontWeight="bold">{title}</Text>
                 <Text>Royalties: {royalties}%</Text>
-            </Box>
+            </Box> */}
 
             {isVideo ? (
                 <video ref={videoRef} src={src} style={{ width: '100%' }} autoPlay muted controls={false} />
