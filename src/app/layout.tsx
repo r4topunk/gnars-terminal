@@ -13,16 +13,16 @@ const inter = Inter({ subsets: ['latin'] });
 
 // Update the metadata without themeColor
 export const metadata: Metadata = {
-  title: 'Gnars Terminal',
-  description: 'Gnars Dao Essentials Tools Backup',
-  metadataBase: new URL('https://termignar.vercel.app/'), // Replace with your domain
+  title: 'Gnars Dao',
+  description: 'Gnarly Ecosystem',
+  metadataBase: new URL('https://gnars.pro'), // Replace with your domain
   openGraph: {
     images: [
       {
         url: '/images/shredquarters.png',
         width: 800,
         height: 600,
-        alt: 'Gnars Terminal',
+        alt: 'Gnars Pro',
       },
     ],
   },
