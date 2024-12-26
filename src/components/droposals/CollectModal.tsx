@@ -10,7 +10,11 @@ import {
 } from "@/components/ui/dialog";
 import { Box, Flex, Text, VStack, Image, DialogFooter } from '@chakra-ui/react';
 import ReactFlow, { Background, Controls, Node, Edge, Handle, Position } from 'react-flow-renderer';
+import CustomVideoPlayer from './CustomVideoPlayer';
+import { FormattedAddress } from '../utils/ethereum';
+import { parse } from 'path';
 
+// usage: <FormattedAddress address={address} />
 const CustomNode = ({ data }: { data: { label: string; imageUrl: string } }) => {
     return (
         <div style={{ textAlign: 'center', position: 'relative' }}>
@@ -22,9 +26,15 @@ const CustomNode = ({ data }: { data: { label: string; imageUrl: string } }) => 
             <img
                 src={data.imageUrl}
                 alt={data.label}
-                style={{ width: '80px', height: '80px', borderRadius: '50%' }}
+                style={{ width: '60px', height: '60px', borderRadius: '0%' }}
             />
-            <div>{data.label}</div>
+            <div>
+                {data.label.startsWith('0x') ? (
+                    <FormattedAddress address={data.label} />
+                ) : (
+                    data.label
+                )}
+            </div>
             <Handle
                 type="target"
                 position={Position.Left}
@@ -33,6 +43,7 @@ const CustomNode = ({ data }: { data: { label: string; imageUrl: string } }) => 
         </div>
     );
 };
+
 
 const CollectModal = ({
     isOpen,
@@ -57,7 +68,9 @@ const CollectModal = ({
     mediaSrc: string;
     isVideo: boolean;
 }) => {
-    // Memoize the nodes
+
+    const percentageSplit = parseInt(royalties)
+
     const nodes: Node[] = useMemo(() => [
         {
             id: 'user',
@@ -67,24 +80,40 @@ const CollectModal = ({
         },
         {
             id: 'fundRecipient',
-            data: { label: fundsRecipient, imageUrl: '/images/ethereum.png' },
+            data: { label: fundsRecipient, imageUrl: '/images/gnars.webp' }, // Address
             position: { x: 300, y: 50 },
             type: 'custom',
         },
         {
             id: 'proposer',
-            data: { label: proposer, imageUrl: '/images/ethereum.png' },
+            data: { label: proposer, imageUrl: '/images/ethereum.png' }, // Address
             position: { x: 300, y: 250 },
             type: 'custom',
         },
     ], [fundsRecipient, proposer]);
 
-    // Memoize the edges
-    const edges: Edge[] = useMemo(() => [
-        { id: 'user-to-recipient', source: 'user', target: 'fundRecipient', type: 'smoothstep', animated: true },
-        { id: 'user-to-proposer', source: 'user', target: 'proposer', type: 'smoothstep', animated: true },
-    ], []);
 
+    const edges: Edge[] = useMemo(() => [
+        {
+            id: 'user-to-recipient',
+            source: 'user',
+            target: 'fundRecipient',
+            type: 'smoothstep',
+            animated: true,
+            label: `${percentageSplit}%`, // Add percentage label
+            style: { stroke: '#000', strokeWidth: 3 },
+        },
+        {
+            id: 'user-to-proposer',
+            source: 'user',
+            target: 'proposer',
+            type: 'smoothstep',
+            animated: true,
+            label: `${100 - percentageSplit}%`, // Add remaining percentage label
+            style: { stroke: '#000', strokeWidth: 3 },
+        },
+    ], [percentageSplit]);
+    console.log(saleConfig)
     return (
         <DialogRoot open={isOpen} onOpenChange={onClose} size="cover" placement="center" motionPreset="slide-in-bottom">
             <DialogContent>
@@ -96,15 +125,29 @@ const CollectModal = ({
                     <Flex direction={{ base: 'column', md: 'row' }} gap={4}>
                         <VStack align="start" w={{ base: '100%', md: '50%' }}>
                             {isVideo ? (
-                                <video src={mediaSrc} style={{ width: '100%' }} controls />
+                                <CustomVideoPlayer
+                                    src={mediaSrc}
+                                    isVideo={isVideo}
+                                    title={title}
+                                    royalties={royalties}
+                                    proposer={proposer}
+                                    fundsRecipient={fundsRecipient}
+                                    description={description}
+                                    saleConfig={saleConfig}
+                                />
                             ) : (
                                 <Image src={mediaSrc} alt={title} width="100%" />
                             )}
                             <Text mt={4}>Description: {description}</Text>
-                            <Text>Royalties: {royalties}%</Text>
+                            <Text mt={4}>NFT Contract: </Text>
                         </VStack>
                         <Box position="relative" p={5} w={{ base: '100%', md: '50%' }} h="400px" bg="gray.100" borderRadius="md">
-                            <ReactFlow nodes={nodes} edges={edges} fitView nodeTypes={{ custom: CustomNode }}>
+                            <ReactFlow
+                                nodes={nodes}
+                                edges={edges}
+                                fitView
+                                nodeTypes={{ custom: CustomNode }}
+                            >
                                 <Background gap={16} size={1} color="#888" />
                                 <Controls />
                             </ReactFlow>

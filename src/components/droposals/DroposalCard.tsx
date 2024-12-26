@@ -1,10 +1,8 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
     Box,
     VStack,
-    Text,
-    Stack,
     Skeleton
 } from '@chakra-ui/react';
 import { fetchProposals } from '@/app/services/proposal';
@@ -18,96 +16,96 @@ const TARGET_ADDRESS = '0x58c3ccb2dcb9384e5ab9111cd1a5dea916b0f33c';
 export default function DroposalCard() {
     const [lastProposal, setLastProposal] = useState<any | null>(null);
 
-    useEffect(() => {
-        const fetchAndDecodeProposals = async () => {
-            try {
-                const fetchedProposals = await fetchProposals(
-                    DAO_ADDRESSES.token,
-                    'proposalNumber',
-                    'desc', // Fetch the latest proposal
-                    1,
-                    { targets_contains: [TARGET_ADDRESS] },
-                    true
+    const fetchAndDecodeProposals = useCallback(async () => {
+        try {
+            const fetchedProposals = await fetchProposals(
+                DAO_ADDRESSES.token,
+                'proposalNumber',
+                'desc',
+                1,
+                { targets_contains: [TARGET_ADDRESS] },
+                true
+            );
+
+            if (fetchedProposals.length > 0) {
+                const proposal = fetchedProposals[0];
+                const rawCalldatas = proposal.calldatas;
+                const calldatasArray = typeof rawCalldatas === 'string'
+                    ? rawCalldatas.split(':')
+                    : rawCalldatas;
+
+                const normalizedCalldatas = calldatasArray.map((calldata: string) =>
+                    calldata === '0x' || calldata === '0' ? '0x' : calldata
                 );
 
-                if (fetchedProposals.length > 0) {
-                    const proposal = fetchedProposals[0];
-                    const rawCalldatas = proposal.calldatas;
-                    const calldatasArray = typeof rawCalldatas === 'string'
-                        ? rawCalldatas.split(':')
-                        : rawCalldatas;
+                const decodedCalldatas = normalizedCalldatas.map((calldata: string) => {
+                    if (!calldata || calldata.length < 8) return null;
 
-                    const normalizedCalldatas = calldatasArray.map((calldata: string) =>
-                        calldata === '0x' || calldata === '0' ? '0x' : calldata
-                    );
+                    let finalCalldata = calldata;
+                    if (!finalCalldata.startsWith('0x')) {
+                        finalCalldata = '0x' + finalCalldata;
+                    }
 
-                    const decodedCalldatas = normalizedCalldatas.map((calldata: string) => {
-                        if (!calldata || calldata.length < 8) return null;
+                    try {
+                        const { args } = decodeFunctionData({
+                            abi: droposalABI,
+                            data: finalCalldata as `0x${string}`,
+                        });
 
-                        let finalCalldata = calldata;
-                        if (!finalCalldata.startsWith('0x')) {
-                            finalCalldata = '0x' + finalCalldata;
-                        }
+                        const [
+                            name,
+                            symbol,
+                            editionSize,
+                            royaltyBPS,
+                            fundsRecipient,
+                            defaultAdmin,
+                            saleConfig,
+                            description,
+                            animationURI,
+                            imageURI,
+                        ] = args as [
+                            string,
+                            string,
+                            bigint,
+                            number,
+                            Address,
+                            Address,
+                            unknown,
+                            string,
+                            string,
+                            string
+                        ];
 
-                        try {
-                            const { args } = decodeFunctionData({
-                                abi: droposalABI,
-                                data: finalCalldata as `0x${string}`,
-                            });
+                        return {
+                            name,
+                            symbol,
+                            editionSize: editionSize.toString(),
+                            royaltyBPS: (royaltyBPS / 100).toFixed(2),
+                            fundsRecipient,
+                            defaultAdmin,
+                            saleConfig,
+                            description,
+                            imageURI: formatURI(imageURI),
+                            animationURI: formatURI(animationURI),
+                        };
+                    } catch {
+                        return null;
+                    }
+                });
 
-                            const [
-                                name,
-                                symbol,
-                                editionSize,
-                                royaltyBPS,
-                                fundsRecipient,
-                                defaultAdmin,
-                                saleConfig,
-                                description,
-                                animationURI,
-                                imageURI,
-                            ] = args as [
-                                string,
-                                string,
-                                bigint,
-                                number,
-                                Address,
-                                Address,
-                                unknown,
-                                string,
-                                string,
-                                string
-                            ];
-
-                            return {
-                                name,
-                                symbol,
-                                editionSize: editionSize.toString(),
-                                royaltyBPS: (royaltyBPS / 100).toFixed(2),
-                                fundsRecipient,
-                                defaultAdmin,
-                                saleConfig,
-                                description,
-                                imageURI: formatURI(imageURI),
-                                animationURI: formatURI(animationURI),
-                            };
-                        } catch {
-                            return null;
-                        }
-                    });
-
-                    setLastProposal({
-                        ...proposal,
-                        decodedCalldatas: decodedCalldatas.filter((d) => d !== null),
-                    });
-                }
-            } catch (error) {
-                console.error('Error fetching proposals:', error);
+                setLastProposal({
+                    ...proposal,
+                    decodedCalldatas: decodedCalldatas.filter((d) => d !== null),
+                });
             }
-        };
-
-        fetchAndDecodeProposals();
+        } catch (error) {
+            console.error('Error fetching proposals:', error);
+        }
     }, []);
+
+    useEffect(() => {
+        fetchAndDecodeProposals();
+    }, [fetchAndDecodeProposals]);
 
     const formatURI = (uri: string): string => {
         if (!uri) return '';
@@ -145,25 +143,17 @@ export default function DroposalCard() {
         >
             {lastProposal.decodedCalldatas.length > 0 ? (
                 lastProposal.decodedCalldatas.map((data: any, idx: number) => (
-                    <Stack
+                    <CustomVideoPlayer
                         key={idx}
-                        direction={{ base: 'column', md: 'column' }}
-                        gap={4}
-                        align="start"
-                        justify="space-between"
-                        w="full"
-                    >
-                        <CustomVideoPlayer
-                            src={data.animationURI || data.imageURI}
-                            isVideo={!!data.animationURI}
-                            title={data.name}
-                            royalties={data.royaltyBPS}
-                            proposer={lastProposal.proposer} // Pass proposer
-                            fundsRecipient={data.fundsRecipient} // Pass funds recipient
-                            description={data.description} // Pass description
-                            saleConfig={data.saleConfig} // Pass sale configuration
-                        />
-                    </Stack>
+                        src={data.animationURI || data.imageURI}
+                        isVideo={!!data.animationURI}
+                        title={data.name}
+                        royalties={data.royaltyBPS}
+                        proposer={lastProposal.proposer}
+                        fundsRecipient={data.fundsRecipient}
+                        description={data.description}
+                        saleConfig={data.saleConfig}
+                    />
                 ))
             ) : (
                 <Box

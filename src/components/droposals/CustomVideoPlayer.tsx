@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import { Box, Button, IconButton, HStack, Image, Text } from '@chakra-ui/react';
 import { FiVolume2, FiVolumeX, FiMaximize, FiMinimize } from 'react-icons/fi';
 import { LuPause, LuPlay } from 'react-icons/lu';
@@ -16,7 +16,7 @@ const CustomVideoPlayer = ({ src, isVideo, title, royalties, proposer, fundsReci
     // Show/hide controls on hover
     const [isHovered, setIsHovered] = useState(false);
 
-    const handlePlayPause = () => {
+    const handlePlayPause = useCallback(() => {
         if (videoRef.current) {
             if (isPlaying) {
                 videoRef.current.pause();
@@ -25,17 +25,17 @@ const CustomVideoPlayer = ({ src, isVideo, title, royalties, proposer, fundsReci
             }
             setIsPlaying(!isPlaying);
         }
-    };
+    }, [isPlaying]);
 
-    const handleVolumeChange = () => {
+    const handleVolumeChange = useCallback(() => {
         if (videoRef.current) {
             const newVolume = volume === 0 ? 1 : 0;
             videoRef.current.volume = newVolume;
             setVolume(newVolume);
         }
-    };
+    }, [volume]);
 
-    const handleFullscreenToggle = () => {
+    const handleFullscreenToggle = useCallback(() => {
         if (videoRef.current) {
             if (isFullscreen) {
                 document.exitFullscreen();
@@ -44,35 +44,35 @@ const CustomVideoPlayer = ({ src, isVideo, title, royalties, proposer, fundsReci
             }
             setIsFullscreen(!isFullscreen);
         }
-    };
+    }, [isFullscreen]);
 
-    const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleProgressChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         if (videoRef.current) {
             const newTime = (videoRef.current.duration * parseFloat(e.target.value)) / 100;
             videoRef.current.currentTime = newTime;
             setProgress(parseFloat(e.target.value));
         }
-    };
+    }, []);
 
-    const handleTimeUpdate = () => {
+    const handleTimeUpdate = useCallback(() => {
         if (videoRef.current) {
             const newProgress = (videoRef.current.currentTime / videoRef.current.duration) * 100;
             setProgress(newProgress);
         }
-    };
+    }, []);
 
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (videoRef.current) {
             const rect = e.currentTarget.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const newHoverTime = (x / rect.width) * videoRef.current.duration;
             setHoverTime(newHoverTime);
         }
-    };
+    }, []);
 
-    const handleMouseLeave = () => {
+    const handleMouseLeave = useCallback(() => {
         setHoverTime(null);
-    };
+    }, []);
 
     useEffect(() => {
         const video = videoRef.current;
@@ -82,7 +82,7 @@ const CustomVideoPlayer = ({ src, isVideo, title, royalties, proposer, fundsReci
                 video.removeEventListener('timeupdate', handleTimeUpdate);
             };
         }
-    }, []);
+    }, [handleTimeUpdate]);
 
     /**
      * By default, CSS backgrounds stack in the order you write them:
