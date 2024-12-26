@@ -127,7 +127,7 @@ const CustomVideoPlayer = ({ src, isVideo, title, royalties }: { src: string; is
             </Box>
 
             {isVideo ? (
-                <video ref={videoRef} src={src} style={{ width: '100%' }} autoPlay muted />
+                <video ref={videoRef} src={src} style={{ width: '100%' }} autoPlay muted controls={false} />
             ) : (
                 <Image src={src} alt="Droposal Media" width="100%" rounded="md" />
             )}
@@ -239,7 +239,7 @@ const CustomVideoPlayer = ({ src, isVideo, title, royalties }: { src: string; is
                         size="sm"
                         onClick={() => alert('Mint button clicked')}
                     >
-                        Mint
+                        Collect
                     </Button>
                 </Box>
             )
