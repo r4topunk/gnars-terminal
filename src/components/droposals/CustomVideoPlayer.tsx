@@ -127,7 +127,7 @@ const CustomVideoPlayer = ({ src, isVideo, title, royalties }: { src: string; is
             </Box>
 
             {isVideo ? (
-                <video ref={videoRef} src={src} style={{ width: '100%' }} />
+                <video ref={videoRef} src={src} style={{ width: '100%' }} autoPlay muted />
             ) : (
                 <Image src={src} alt="Droposal Media" width="100%" rounded="md" />
             )}
@@ -145,23 +145,21 @@ const CustomVideoPlayer = ({ src, isVideo, title, royalties }: { src: string; is
                     justifyContent="space-between"
                 >
                     {/* Left side: Control buttons */}
-                    <HStack gap={2}>
-                        <Button onClick={handlePlayPause} colorScheme="teal" size="sm">
+                    <HStack gap={0}>
+                        <Button onClick={handlePlayPause} size="xs" p={-2} variant={'ghost'} color={'white'} _hover={{ bg: 'transparent', color: 'yellow' }}>
                             {isPlaying ? <LuPause /> : <LuPlay />}
                         </Button>
                         <IconButton
                             aria-label="Volume"
                             onClick={handleVolumeChange}
-                            colorScheme="teal"
-                            size="sm"
+                            p={-2} variant={'ghost'} color={'white'} _hover={{ bg: 'transparent', color: 'yellow' }} size="sm"
                         >
                             {volume === 0 ? <FiVolumeX /> : <FiVolume2 />}
-                        </IconButton>
+                        </IconButton >
                         <IconButton
                             aria-label="Fullscreen"
                             onClick={handleFullscreenToggle}
-                            colorScheme="teal"
-                            size="sm"
+                            p={-2} variant={'ghost'} color={'white'} _hover={{ bg: 'transparent', color: 'yellow' }} size="sm"
                         >
                             {isFullscreen ? <FiMinimize /> : <FiMaximize />}
                         </IconButton>
@@ -244,8 +242,9 @@ const CustomVideoPlayer = ({ src, isVideo, title, royalties }: { src: string; is
                         Mint
                     </Button>
                 </Box>
-            )}
-        </Box>
+            )
+            }
+        </Box >
     );
 };
 
