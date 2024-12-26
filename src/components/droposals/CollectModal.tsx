@@ -12,9 +12,15 @@ import { Box, Flex, Text, VStack, Image, DialogFooter } from '@chakra-ui/react';
 import ReactFlow, { Background, Controls, Node, Edge, Handle, Position } from 'react-flow-renderer';
 import CustomVideoPlayer from './CustomVideoPlayer';
 import { FormattedAddress } from '../utils/ethereum';
-import { parse } from 'path';
 
-// usage: <FormattedAddress address={address} />
+
+// TODO: Learn how to query the NFT contract from the proposal data, 
+// there is no NFT contract address at the moment of the proposal transaction creation, so we need to seek a relationship between the proposal and the NFT contract that was created after
+const droposalContractDictionary = {
+    0: '0x58c3ccb2dcb9384e5ab9111cd1a5dea916b0f33c',
+    1: '0xd2f21a72730259512f6edc60cfd182a79420dae6',
+};
+
 const CustomNode = ({ data }: { data: { label: string; imageUrl: string } }) => {
     return (
         <div style={{ textAlign: 'center', position: 'relative' }}>
@@ -44,7 +50,6 @@ const CustomNode = ({ data }: { data: { label: string; imageUrl: string } }) => 
     );
 };
 
-
 const CollectModal = ({
     isOpen,
     onClose,
@@ -56,6 +61,7 @@ const CollectModal = ({
     saleConfig,
     mediaSrc,
     isVideo,
+    index, // Accept the index prop
 }: {
     isOpen: boolean;
     onClose: () => void;
@@ -67,8 +73,9 @@ const CollectModal = ({
     saleConfig: any;
     mediaSrc: string;
     isVideo: boolean;
+    index: number; // Define the index prop type
 }) => {
-
+    console.log(index)
     const percentageSplit = parseInt(royalties)
 
     const nodes: Node[] = useMemo(() => [
@@ -114,6 +121,7 @@ const CollectModal = ({
         },
     ], [percentageSplit]);
     console.log(saleConfig)
+    console.log(`Proposal index: ${index}`); // Use the index as needed
     return (
         <DialogRoot open={isOpen} onOpenChange={onClose} size="cover" placement="center" motionPreset="slide-in-bottom">
             <DialogContent>
@@ -134,6 +142,7 @@ const CollectModal = ({
                                     fundsRecipient={fundsRecipient}
                                     description={description}
                                     saleConfig={saleConfig}
+                                    index={index} // Pass the index here
                                 />
                             ) : (
                                 <Image src={mediaSrc} alt={title} width="100%" />

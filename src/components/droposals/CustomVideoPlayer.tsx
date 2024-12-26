@@ -4,7 +4,7 @@ import { FiVolume2, FiVolumeX, FiMaximize, FiMinimize } from 'react-icons/fi';
 import { LuPause, LuPlay } from 'react-icons/lu';
 import CollectModal from './CollectModal'; // Import the CollectModal component
 
-const CustomVideoPlayer = ({ src, isVideo, title, royalties, proposer, fundsRecipient, description, saleConfig }: { src: string; isVideo: boolean; title: string; royalties: string; proposer: string; fundsRecipient: string; description: string; saleConfig: any }) => {
+const CustomVideoPlayer = ({ src, isVideo, title, royalties, proposer, fundsRecipient, description, saleConfig, index }: { src: string; isVideo: boolean; title: string; royalties: string; proposer: string; fundsRecipient: string; description: string; saleConfig: any; index: number }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolume] = useState(1);
@@ -258,6 +258,7 @@ const CustomVideoPlayer = ({ src, isVideo, title, royalties, proposer, fundsReci
                 saleConfig={saleConfig}
                 mediaSrc={src}
                 isVideo={isVideo}
+                index={index} // Pass the index here
             />
         </Box>
     );

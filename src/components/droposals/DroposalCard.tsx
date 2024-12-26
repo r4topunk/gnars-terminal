@@ -153,6 +153,7 @@ export default function DroposalCard() {
                         fundsRecipient={data.fundsRecipient}
                         description={data.description}
                         saleConfig={data.saleConfig}
+                        index={idx} // Pass the index here
                     />
                 ))
             ) : (
