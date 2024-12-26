@@ -1,6 +1,7 @@
 import AuctionCard from '@/components/cards/auction';
 import GovernorCard from '@/components/cards/governor';
 import ZoraCard from '@/components/cards/zora';
+import DroposalCard from '@/components/droposals/DroposalCard';
 import { Status } from '@/components/proposal/status';
 import { fetchAuction } from '@/services/auction';
 import { DAO_ADDRESSES } from '@/utils/constants';
@@ -26,7 +27,8 @@ async function App() {
         w={'full'}
       >
         <GridItem>
-          <ZoraCard />
+          <DroposalCard />
+          {/* <ZoraCard /> */}
         </GridItem>
         <GridItem>
           <AuctionCard defaultAuction={activeAuction} />

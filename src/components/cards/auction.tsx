@@ -51,6 +51,7 @@ export default function AuctionCard({
       <VStack
         shadow={'sm'}
         w={'full'}
+        height="full"
         padding={4}
         rounded={'md'}
         gap={4}
@@ -91,6 +92,7 @@ export default function AuctionCard({
     <VStack
       shadow={'sm'}
       w={'full'}
+      height="full"
       padding={4}
       rounded={'md'}
       gap={4}
@@ -103,7 +105,7 @@ export default function AuctionCard({
         justify={'space-between'}
         w={'full'}
       >
-        <Image asChild rounded={'md'} w={'full'} maxW={{ md: '50%' }}>
+        <Image asChild rounded={'md'} w={'full'} height={"100%"} mt={0.5} maxW={{ md: '55%' }}>
           <NextImage
             width={1024}
             height={1024}
