@@ -12,12 +12,11 @@ import {
 import NextImage from 'next/image';
 import NextLink from 'next/link';
 import { BsGithub } from 'react-icons/bs';
-import { IoDocumentTextOutline } from 'react-icons/io5';
-import { LuArchive, LuHome } from 'react-icons/lu';
-import { MdOutlineHowToVote } from 'react-icons/md';
+import { IoDocumentText } from 'react-icons/io5';
 import AccountMenu from './account-menu';
 import ConnectButton from './connect-button';
 import Sparks from './sparks';
+import { FaEthereum, FaHome, FaVoteYea } from 'react-icons/fa';
 
 export default function Navbar() {
   const [isLargerThanMd] = useMediaQuery(['(min-width: 768px)'], {
@@ -81,7 +80,7 @@ function NavbarLinks({ isLargerThanMd }: { isLargerThanMd: boolean }) {
         gap={'0.5'}
       >
         <NextLink href='/' style={{ width: '100%' }}>
-          <LuHome />
+          <FaHome />
           HOME
         </NextLink>
       </Link>
@@ -97,7 +96,7 @@ function NavbarLinks({ isLargerThanMd }: { isLargerThanMd: boolean }) {
         gap={'0.5'}
       >
         <NextLink href='/dao' style={{ width: '100%' }}>
-          <MdOutlineHowToVote />
+          <FaVoteYea />
           DAO
         </NextLink>
       </Link>
@@ -112,9 +111,9 @@ function NavbarLinks({ isLargerThanMd }: { isLargerThanMd: boolean }) {
         gap={'0.5'}
         asChild
       >
-        <NextLink href='/propdates' style={{ width: '100%' }}>
-          <LuArchive />
-          PROPDATES
+        <NextLink href='/treasure' style={{ width: '100%' }}>
+          <FaEthereum />
+          TREASURE
         </NextLink>
       </Link>
       <Link
@@ -128,8 +127,8 @@ function NavbarLinks({ isLargerThanMd }: { isLargerThanMd: boolean }) {
         gap={'0.5'}
         asChild
       >
-        <NextLink href='/about' style={{ width: '100%' }}>
-          <IoDocumentTextOutline />
+        <NextLink href='https://gnars.center' style={{ width: '100%' }}>
+          <IoDocumentText />
           ABOUT
         </NextLink>
       </Link>

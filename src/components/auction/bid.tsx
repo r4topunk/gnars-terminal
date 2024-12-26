@@ -83,7 +83,7 @@ export function AuctionBid(props: BidProps) {
 
   return (
     <VStack align={'stretch'} gap={0} w={'full'}>
-      <HStack mt={4} w={'full'}>
+      <HStack mt={4} w={'100%'} >
         {isAuctionRunning ? (
           <>
             <Tooltip showArrow content='Sparks'>
@@ -102,8 +102,8 @@ export function AuctionBid(props: BidProps) {
               </ChakraLink>
             </Tooltip>
             <NumberInputRoot
-              maxW={{ md: '120px' }}
-              w={'full'}
+
+              w={'100%'}
               defaultValue={bidValue}
               step={111}
               onValueChange={(datails) => setBidValue(datails.value)}
