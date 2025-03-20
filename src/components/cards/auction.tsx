@@ -72,7 +72,7 @@ export default function AuctionCard({
 
   const auctionEndedAt = new Date(parseInt(activeAuction.endTime) * 1000);
   const isAuctionRunning = parseInt(activeAuction.endTime) * 1000 > Date.now();
-  console.log({ activeAuction });
+  // console.log({ activeAuction });
 
   return (
     <VStack
