@@ -35,6 +35,8 @@ export default async function Image() {
     const imageResponse = process.env.NEXT_PUBLIC_URL + `/_next/image?w=640&q=75&url=${encodedUrl}`;
     const imageForegroundUrl = imageResponse;
 
+    const imageBackgroundUrl = process.env.NEXT_PUBLIC_URL + '/images/logo-banner.jpg';
+
     // Format the end time
     const endTimeDate = new Date(parseInt(activeAuction.endTime) * 1000);
     const now = new Date();
@@ -77,7 +79,11 @@ export default async function Image() {
             display: 'flex',
             flexDirection: 'column',
             backgroundColor: '#1a1a1a',
+            // backgroundImage: `url(${imageBackgroundUrl})`,
+            // backgroundSize: 'cover',
+            // backgroundPosition: 'center',
             padding: '20px',
+            position: 'relative',
           }}
         >
           {/* Title Section */}
