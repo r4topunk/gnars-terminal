@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { fetchAuction } from '@/services/auction';
 import { DAO_ADDRESSES } from '@/utils/constants';
+import { formatEther } from 'viem'
 
 // export const alt = 'Gnars Frame V2';
 export const size = {
@@ -24,7 +25,7 @@ export default async function Image() {
     }
 
     const activeAuction = auctions[0];
-    // console.dir(activeAuction);
+    console.dir(activeAuction);
 
     if (!activeAuction?.token?.image) {
       throw new Error('No image URL available');
@@ -40,19 +41,32 @@ export default async function Image() {
     const timeRemaining = endTimeDate.getTime() - now.getTime();
 
     // Convert to readable format
-    const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+    // const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
     const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
 
     const remainingTime = timeRemaining > 0
-      ? `${days}d ${hours}h ${minutes}m ${seconds}s`
+      ? `${hours}h ${minutes}m ${seconds}s`
       : 'Auction ended';
 
 
     // Bid Count
-    const bidMessage = activeAuction.bidCount > 0 ? `Bids: ${activeAuction.bidCount}` : 'Place the first bid';
+    const bidMessage = activeAuction.bidCount > 0
+      ? ``
+      : 'Place the first bid';
 
+
+    // Handle bid information with fallbacks
+    const highestBid = activeAuction?.highestBid?.amount
+      ? formatEther(activeAuction.highestBid.amount)
+      : "0";
+
+    const bidder = activeAuction?.highestBid?.bidder || "";
+
+    const biderMessage = highestBid !== "0" && bidder
+      ? `Highest Bid: ${highestBid} ETH by ${bidder.slice(0, 6)}...${bidder.slice(-4)}`
+      : "";
 
     return new ImageResponse(
       (
@@ -93,14 +107,14 @@ export default async function Image() {
           }}>
             {/* Image Section */}
             <div style={{
-              width: '40%',
-              height: '100%',
+              width: '250',
+              height: '250',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
               padding: '10px',
-              backgroundColor: 'rgba(255, 255, 255, 0.05)',
-              borderRadius: '10px',
+              // backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              // borderRadius: '10px',
             }}>
               {imageForegroundUrl && (
                 <img
@@ -140,15 +154,15 @@ export default async function Image() {
               </p>
               <p style={{
                 color: '#ffffff',
-                fontSize: '24px',
+                fontSize: '16px',
                 margin: 0,
                 opacity: 0.9,
-                padding: '8px 16px',
+                padding: '8px 8px',
                 backgroundColor: 'rgba(255, 215, 0, 0.1)',
                 borderRadius: '6px',
                 display: 'flex',
               }}>
-                {bidMessage}
+                {bidMessage}{biderMessage}
               </p>
             </div>
           </div>
