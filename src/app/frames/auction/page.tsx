@@ -10,12 +10,12 @@ const frame = {
   version: 'next',
   imageUrl: `${appUrl}/frames/auction/opengraph-image`,
   button: {
-    title: 'Launch Frame',
+    title: 'Gnars Auction',
     action: {
       type: 'launch_frame',
-      name: 'Farcaster Frames v2 Demo',
+      name: 'Gnars Auction',
       url: `${appUrl}/frames/auction/`,
-      splashImageUrl: `${appUrl}/splash.png`,
+      splashImageUrl: `${appUrl}/images/loading.gif`,
       splashBackgroundColor: '#f7f7f7',
     },
   },

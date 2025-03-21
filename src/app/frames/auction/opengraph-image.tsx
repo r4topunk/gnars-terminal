@@ -2,14 +2,13 @@ import { ImageResponse } from 'next/og';
 import { fetchAuction } from '@/services/auction';
 import { DAO_ADDRESSES } from '@/utils/constants';
 
-// export const revalidate = 1;
-export const alt = 'Gnars Frame V2';
+// export const alt = 'Gnars Frame V2';
 export const size = {
   width: 600,
   height: 400,
 };
 
-export const contentType = 'image/png';
+// export const contentType = 'image/png';
 
 export default async function Image() {
   try {
@@ -25,26 +24,35 @@ export default async function Image() {
     }
 
     const activeAuction = auctions[0];
-    console.dir(activeAuction);
+    // console.dir(activeAuction);
     
     if (!activeAuction?.token?.image) {
       throw new Error('No image URL available');
     }
 
-    // const imageResponse = activeAuction.token.image;
     const encodedUrl = encodeURIComponent(activeAuction.token.image);
-    const imageResponse = process.env.NEXT_PUBLIC_URL + `/_next/image?url=${encodedUrl}&w=600&q=75`;
+    const imageResponse = process.env.NEXT_PUBLIC_URL + `/_next/image?w=640&q=75&url=${encodedUrl}`;
     const imageForegroundUrl = imageResponse;
-
-    // const imageResponse = await fetch(activeAuction.token.image);
     
-    // if (!imageResponse.ok) {
-    //   throw new Error('Failed to fetch image');
-    // }
+    // Format the end time
+    const endTimeDate = new Date(parseInt(activeAuction.endTime) * 1000);
+    const now = new Date();
+    const timeRemaining = endTimeDate.getTime() - now.getTime();
+    
+    // Convert to readable format
+    const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+    
+    const remainingTime = timeRemaining > 0 
+      ? `${days}d ${hours}h ${minutes}m ${seconds}s`
+      : 'Auction ended';
 
-    // const imageBuffer = await imageResponse.arrayBuffer();
-    // const base64Image = Buffer.from(imageBuffer).toString('base64');
-    // const imageForegroundUrl = `data:image/svg+xml;base64,${base64Image}`;
+
+    // Bid Count
+    const bidMessage = activeAuction.bidCount > 0 ? `Bids: ${activeAuction.bidCount}` : 'Be the first to bid';
+
 
     return new ImageResponse(
       (
@@ -72,9 +80,8 @@ export default async function Image() {
             {imageForegroundUrl && (
               <img
                 src={imageForegroundUrl}
-                // alt={`Auction token id ${activeAuction.token.tokenId}`}
-                width='600'
-                height='600'
+                width='200'
+                height='200'
               />
             )}
           </div>
@@ -102,6 +109,24 @@ export default async function Image() {
               display: 'flex',
             }}>
               #{activeAuction.token.tokenId}
+            </p>
+            <p style={{
+              color: '#ffffff',
+              fontSize: '24px',
+              margin: 0,
+              opacity: 0.8,
+              display: 'flex',
+            }}>
+              Ending: {remainingTime}
+            </p>
+            <p style={{
+              color: '#ffffff',
+              fontSize: '24px',
+              margin: 0,
+              opacity: 0.8,
+              display: 'flex',
+            }}>
+              {bidMessage}
             </p>
           </div>
         </div>
